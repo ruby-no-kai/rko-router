@@ -63,7 +63,6 @@ http {
     }
 
     root /home/regional/railsapp/current/public;
-    passenger_enabled on;
   }
 
   server {
@@ -114,7 +113,6 @@ http {
 #      include basic_auth;
 
     root /home/rubykaigi/railsapp/current/public;
-    passenger_enabled on;
 
     location /2009/  {
       default_type text/html;
@@ -157,7 +155,6 @@ http {
     server_name  staging.rubykaigi.org;
 
     root /home/rubykaigi/railsapp.staging/current/public;
-    passenger_enabled on;
     rails_env staging;
 
     location /2009/  {
