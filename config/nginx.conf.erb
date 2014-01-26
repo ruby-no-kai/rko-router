@@ -24,20 +24,188 @@ http {
 	#Must read the body in 5 seconds.
 	client_body_timeout 5;
 
-	upstream app_server {
-		server rubykaigi.org fail_timeout=0;
- 	}
-
-	server {
+  server {
 		listen <%= ENV["PORT"] %>;
-		server_name _;
-		keepalive_timeout 5;
+    server_name regional.rubykaigi.org *.tokyo.rubykaigi.org;
 
-		location / {
-			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-			proxy_set_header Host $http_host;
-			proxy_redirect off;
-			proxy_pass http://app_server;
-		}
-	}
+#       rewrite_log on;
+
+    access_log  /home/regional/railsapp/shared/log/nginx-access.log;
+#       error_log  /home/regional/railsapp/shared/log/nginx-error.log notice;
+    error_log  /home/regional/railsapp/shared/log/nginx-error.log;
+
+
+    location ~ ^/oedo03(.*) {
+      proxy_pass http://oedo03.herokuapp.com;
+#       rewrite ^/oedo03(.*)$ http://oedo03.herokuapp.com/oedo03$1 permanent;
+    }
+
+    location ~ ^/assets/oedo03 {
+      rewrite ^/assets/oedo03 http://oedo03.herokuapp.com/assets/oedo03 permanent;
+    }
+
+    # 
+    # kansai 05, y10y
+    #
+    location ~ ^/kansai05(.*) {
+      proxy_pass http://kanrk05.herokuapp.com;
+    }
+
+    location ~ ^/assets/kansai05 {
+      rewrite ^/assets/kansai05 http://kanrk05.herokuapp.com/assets/kansai05 permanent;
+    }
+
+    # 
+    # chuork 01, y6y
+    #
+    location ~ ^/chuork01(.*) {
+      proxy_pass http://chuork.github.io;
+    }
+
+    # 
+    # okrk01, y6y
+    #
+    location ~ ^/okrk01(.*) {
+      proxy_pass http://okinawarb.github.io;
+    }
+
+    root /home/regional/railsapp/current/public;
+    passenger_enabled on;
+  }
+
+  server {
+		listen <%= ENV["PORT"] %>;
+    server_name j.rubykaigi.org;
+
+    access_log /usr/local/logs/j.rubykaigi.org-access.log;
+    error_log /usr/local/logs/j.rubykaigi.org-error.log;
+
+    location = / {
+      rewrite ^/$ /2011 redirect;
+    }
+
+    location ~ ^/20([0-9][0-9]) {
+      rewrite ^/20([0-9][0-9])$ http://jrubykaigi.org/20$1 permanent;
+    }
+    location ~ ^/20([0-9][0-9])/ {
+      rewrite ^/20([0-9][0-9])/$ /20$1 redirect;
+    }
+  }
+  
+  server {
+		listen <%= ENV["PORT"] %>;
+    server_name yami.rubykaigi.org;
+
+    access_log /usr/local/logs/yami.rubykaigi.org-access.log;
+    error_log /usr/local/logs/yami.rubykaigi.org-error.log;
+
+    location = / {
+      rewrite ^/$ /2011 redirect;
+    }
+
+    location ~/2011 {
+      rewrite ^/2011/?$ http://yamirubykaigi.wordpress.com permanent;
+    }
+  }
+
+  server {
+		listen <%= ENV["PORT"] %>;
+    server_name  rubykaigi.org www.rubykaigi.org ~^200[6-8]\.rubykaigi\.org$;
+
+    rewrite_log on;
+
+    if ($host ~* www\.(.*)) {
+      set $host_without_www $1;
+      rewrite ^(.*)$ http://$host_without_www permanent;
+    }
+
+    if ($host ~* (200[6-8])\.(.*)) {
+      set $rubykaigi_year $1;
+      rewrite ^(.*)$ http://jp.rubyist.net/RubyKaigi$rubykaigi_year permanent;
+    }
+
+#      include basic_auth;
+
+    access_log  /home/rubykaigi/railsapp/shared/log/nginx-access.log;
+#      error_log  /home/rubykaigi/railsapp/shared/log/nginx-error.log notice;
+    error_log  /home/rubykaigi/railsapp/shared/log/nginx-error.log;
+
+    root /home/rubykaigi/railsapp/current/public;
+    passenger_enabled on;
+
+    location /2009/  {
+      default_type text/html;
+      rewrite ^/2009/$ /2009/ja permanent;
+      rewrite ^/2009/(ja|en)/?$ /2009/$1.html break;
+      rewrite ^/2009/(ja|en)/talks/?$ /2009/$1/talks.html break;
+      index index.html;
+    }
+
+    location /2010/ {
+      default_type text/html;
+      rewrite ^/2010/$ /2010/ja permanent;
+      rewrite ^/2010/(ja|en)/?$ /2010/$1.html break;
+      rewrite ^/2010/(ja|en)/events/?$ /2010/$1/events.html break;
+      index index.html;
+    }
+
+    location ~ ^/assets/(20[1-9][3-9]) {
+        rewrite ^/assets/(20[1-9][3-9])(.*)$ http://rubykaigi$1.herokuapp.com/assets/$1$2;
+    }
+
+    location ~ ^/2013(.*) {
+        proxy_pass http://rubykaigi2013.herokuapp.com;
+    }
+
+    if ($request_filename ~* /([0-9][0-9][0-9][0-9])?(images|javascripts|stylehseets)/) { break; }
+    if ($request_filename ~* .ico$) { break; }
+
+    if (-f $document_root/system/maintenance.html) {
+      return 503;
+    }
+    error_page 503 @503;
+    location @503 {
+      rewrite ^(.*)$ /system/maintenance.html break;
+    }
+  }
+
+  server {
+		listen <%= ENV["PORT"] %>;
+    server_name  staging.rubykaigi.org;
+
+    access_log  /home/rubykaigi/railsapp.staging/shared/log/nginx-access.log;
+    error_log  /home/rubykaigi/railsapp.staging/shared/log/nginx-error.log;
+
+    root /home/rubykaigi/railsapp.staging/current/public;
+    passenger_enabled on;
+    rails_env staging;
+
+    location /2009/  {
+      default_type text/html;
+      rewrite ^/2009/$ /2009/ja permanent;
+      rewrite ^/2009/(ja|en)/?$ /2009/$1.html break;
+      rewrite ^/2009/(ja|en)/talks/?$ /2009/$1/talks.html break;
+      index index.html;
+    }
+
+    location /2010/ {
+      default_type text/html;
+      rewrite ^/2010/$ /2010/ja permanent;
+      rewrite ^/2010/(ja|en)/?$ /2010/$1.html break;
+      rewrite ^/2010/(ja|en)/events/?$ /2010/$1/events.html break;
+      index index.html;
+    }
+
+
+    if ($request_filename ~* /([0-9][0-9][0-9][0-9])?(images|javascripts|stylehseets)/) { break; }
+    if ($request_filename ~* .ico$) { break; }
+
+    if (-f $document_root/system/maintenance.html) {
+      return 503;
+    }
+    error_page 503 @503;
+    location @503 {
+      rewrite ^(.*)$ /system/maintenance.html break;
+    }
+  }
 }
