@@ -140,14 +140,6 @@ http {
 
     if ($request_filename ~* /([0-9][0-9][0-9][0-9])?(images|javascripts|stylehseets)/) { break; }
     if ($request_filename ~* .ico$) { break; }
-
-    if (-f $document_root/system/maintenance.html) {
-      return 503;
-    }
-    error_page 503 @503;
-    location @503 {
-      rewrite ^(.*)$ /system/maintenance.html break;
-    }
   }
 
   server {
@@ -175,13 +167,5 @@ http {
 
     if ($request_filename ~* /([0-9][0-9][0-9][0-9])?(images|javascripts|stylehseets)/) { break; }
     if ($request_filename ~* .ico$) { break; }
-
-    if (-f $document_root/system/maintenance.html) {
-      return 503;
-    }
-    error_page 503 @503;
-    location @503 {
-      rewrite ^(.*)$ /system/maintenance.html break;
-    }
   }
 }
