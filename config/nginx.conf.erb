@@ -37,7 +37,7 @@ http {
       rewrite ^/assets/oedo03 http://oedo03.herokuapp.com/assets/oedo03 permanent;
     }
 
-    # 
+    #
     # kansai 05, y10y
     #
     location ~ ^/kansai05(.*) {
@@ -48,14 +48,14 @@ http {
       rewrite ^/assets/kansai05 http://kanrk05.herokuapp.com/assets/kansai05 permanent;
     }
 
-    # 
+    #
     # chuork 01, y6y
     #
     location ~ ^/chuork01(.*) {
       proxy_pass http://chuork.github.io;
     }
 
-    # 
+    #
     # okrk01, y6y
     #
     location ~ ^/okrk01(.*) {
@@ -80,7 +80,7 @@ http {
       rewrite ^/20([0-9][0-9])/$ /20$1 redirect;
     }
   }
-  
+
   server {
 		listen <%= ENV["PORT"] %>;
     server_name yami.rubykaigi.org;
