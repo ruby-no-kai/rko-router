@@ -28,13 +28,6 @@ http {
 		listen <%= ENV["PORT"] %>;
     server_name regional.rubykaigi.org *.tokyo.rubykaigi.org;
 
-#       rewrite_log on;
-
-    access_log  /home/regional/railsapp/shared/log/nginx-access.log;
-#       error_log  /home/regional/railsapp/shared/log/nginx-error.log notice;
-    error_log  /home/regional/railsapp/shared/log/nginx-error.log;
-
-
     location ~ ^/oedo03(.*) {
       proxy_pass http://oedo03.herokuapp.com;
 #       rewrite ^/oedo03(.*)$ http://oedo03.herokuapp.com/oedo03$1 permanent;
@@ -77,9 +70,6 @@ http {
 		listen <%= ENV["PORT"] %>;
     server_name j.rubykaigi.org;
 
-    access_log /usr/local/logs/j.rubykaigi.org-access.log;
-    error_log /usr/local/logs/j.rubykaigi.org-error.log;
-
     location = / {
       rewrite ^/$ /2011 redirect;
     }
@@ -95,9 +85,6 @@ http {
   server {
 		listen <%= ENV["PORT"] %>;
     server_name yami.rubykaigi.org;
-
-    access_log /usr/local/logs/yami.rubykaigi.org-access.log;
-    error_log /usr/local/logs/yami.rubykaigi.org-error.log;
 
     location = / {
       rewrite ^/$ /2011 redirect;
@@ -125,10 +112,6 @@ http {
     }
 
 #      include basic_auth;
-
-    access_log  /home/rubykaigi/railsapp/shared/log/nginx-access.log;
-#      error_log  /home/rubykaigi/railsapp/shared/log/nginx-error.log notice;
-    error_log  /home/rubykaigi/railsapp/shared/log/nginx-error.log;
 
     root /home/rubykaigi/railsapp/current/public;
     passenger_enabled on;
@@ -172,9 +155,6 @@ http {
   server {
 		listen <%= ENV["PORT"] %>;
     server_name  staging.rubykaigi.org;
-
-    access_log  /home/rubykaigi/railsapp.staging/shared/log/nginx-access.log;
-    error_log  /home/rubykaigi/railsapp.staging/shared/log/nginx-error.log;
 
     root /home/rubykaigi/railsapp.staging/current/public;
     passenger_enabled on;
