@@ -110,8 +110,6 @@ http {
       rewrite ^(.*)$ http://jp.rubyist.net/RubyKaigi$rubykaigi_year permanent;
     }
 
-#      include basic_auth;
-
     root /home/rubykaigi/railsapp/current/public;
 
     location /2009/  {
