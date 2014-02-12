@@ -136,6 +136,14 @@ http {
         proxy_pass http://rubykaigi2013.herokuapp.com;
     }
 
+    location ~ ^/2014(.*) {
+        proxy_pass http://rubykaigi2014.herokuapp.com;
+    }
+
+    location ~ ^/2015(.*) {
+        proxy_pass http://rubykaigi2015.herokuapp.com;
+    }
+
     if ($request_filename ~* /([0-9][0-9][0-9][0-9])?(images|javascripts|stylehseets)/) { break; }
     if ($request_filename ~* .ico$) { break; }
   }
