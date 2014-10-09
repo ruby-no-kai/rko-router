@@ -172,6 +172,8 @@ http {
   server {
     listen <%= ENV["PORT"] %>;
     server_name sapporo.rubykaigi.org;
-    proxy_pass http://ruby-sapporo.github.io;
+    location / {
+      proxy_pass http://ruby-sapporo.github.io;
+    }
   }
 }
