@@ -168,4 +168,10 @@ http {
     if ($request_filename ~* /([0-9][0-9][0-9][0-9])?(images|javascripts|stylehseets)/) { break; }
     if ($request_filename ~* .ico$) { break; }
   }
+
+  server {
+    listen <%= ENV["PORT"] %>;
+    server_name sapporo.rubykaigi.org;
+    proxy_pass http://ruby-sapporo.github.io;
+  }
 }
