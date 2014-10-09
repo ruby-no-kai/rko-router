@@ -29,7 +29,7 @@ http {
 
   server {
     listen <%= ENV["PORT"] %>;
-    server_name regional.rubykaigi.org *.tokyo.rubykaigi.org;
+    server_name regional.rubykaigi.org;
 
     location ~ ^/oedo03(.*) {
       proxy_pass http://oedo03.herokuapp.com;
