@@ -148,28 +148,10 @@ http {
   server {
     listen <%= ENV["PORT"] %>;
     server_name  staging.rubykaigi.org;
-
-    root /home/rubykaigi/railsapp.staging/current/public;
-
-    location /2009/  {
-      default_type text/html;
-      rewrite ^/2009/$ /2009/ja permanent;
-      rewrite ^/2009/(ja|en)/?$ /2009/$1.html break;
-      rewrite ^/2009/(ja|en)/talks/?$ /2009/$1/talks.html break;
-      index index.html;
+    location / {
+      proxy_set_header Host $host;
+      proxy_pass http://linode.rubykaigi.org;
     }
-
-    location /2010/ {
-      default_type text/html;
-      rewrite ^/2010/$ /2010/ja permanent;
-      rewrite ^/2010/(ja|en)/?$ /2010/$1.html break;
-      rewrite ^/2010/(ja|en)/events/?$ /2010/$1/events.html break;
-      index index.html;
-    }
-
-
-    if ($request_filename ~* /([0-9][0-9][0-9][0-9])?(images|javascripts|stylehseets)/) { break; }
-    if ($request_filename ~* .ico$) { break; }
   }
 
   server {
