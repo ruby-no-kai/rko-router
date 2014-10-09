@@ -110,22 +110,16 @@ http {
       rewrite ^(.*)$ http://jp.rubyist.net/RubyKaigi$rubykaigi_year permanent;
     }
 
-    root /home/rubykaigi/railsapp/current/public;
-
-    location /2009/  {
-      default_type text/html;
-      rewrite ^/2009/$ /2009/ja permanent;
-      rewrite ^/2009/(ja|en)/?$ /2009/$1.html break;
-      rewrite ^/2009/(ja|en)/talks/?$ /2009/$1/talks.html break;
-      index index.html;
+    location ~ ^/2009(.*) {
+        proxy_pass http://linode.rubykaigi.org;
     }
 
-    location /2010/ {
-      default_type text/html;
-      rewrite ^/2010/$ /2010/ja permanent;
-      rewrite ^/2010/(ja|en)/?$ /2010/$1.html break;
-      rewrite ^/2010/(ja|en)/events/?$ /2010/$1/events.html break;
-      index index.html;
+    location ~ ^/2010(.*) {
+        proxy_pass http://linode.rubykaigi.org;
+    }
+
+    location ~ ^/2011(.*) {
+        proxy_pass http://linode.rubykaigi.org;
     }
 
     location ~ ^/assets/(20[1-9][3-9]) {
