@@ -18,7 +18,7 @@ http {
     '"$request" $status $bytes_sent '
     '"$http_referer" "$http_user_agent" "$gzip_ratio"';
   access_log logs/nginx/access.log l2met;
-  error_log logs/nginx/error.log;
+  error_log logs/nginx/access.log;
 
   include mime.types;
   default_type application/octet-stream;
