@@ -65,7 +65,11 @@ http {
       proxy_pass http://okinawarb.github.io;
     }
 
-    root /home/regional/railsapp/current/public;
+    # regional.rubykairi.org
+    location / {
+      proxy_set_header Host $host;
+      proxy_pass http://linode.rubykaigi.org;
+    }
   }
 
   server {
