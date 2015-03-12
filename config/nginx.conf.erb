@@ -164,6 +164,11 @@ http {
         proxy_pass http://linode.rubykaigi.org;
     }
 
+    location ~ ^/2012(.*) {
+        # for 404 kaigi not found
+        proxy_pass http://linode.rubykaigi.org;
+    }
+
     location ~ ^/assets/(20[1-9][3-9]) {
         rewrite ^/assets/(20[1-9][3-9])(.*)$ http://rubykaigi$1.herokuapp.com/assets/$1$2;
     }
