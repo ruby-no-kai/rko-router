@@ -27,9 +27,12 @@ http {
   #Must read the body in 5 seconds.
   client_body_timeout 5;
 
+  port_in_redirect off;
+
   server {
     listen <%= ENV["PORT"] %>;
     server_name regional.rubykaigi.org;
+
 
     location ~ ^/oedo03(.*) {
       proxy_pass http://oedo03.herokuapp.com;
