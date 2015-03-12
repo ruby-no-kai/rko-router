@@ -39,19 +39,11 @@ http {
 #       rewrite ^/oedo03(.*)$ http://oedo03.herokuapp.com/oedo03$1 permanent;
     }
 
-    location ~ ^/assets/oedo03 {
-      rewrite ^/assets/oedo03 http://oedo03.herokuapp.com/assets/oedo03 permanent;
-    }
-
     #
     # kansai 05, y10y
     #
     location ~ ^/kansai05(.*) {
       proxy_pass http://kanrk05.herokuapp.com;
-    }
-
-    location ~ ^/assets/kansai05 {
-      rewrite ^/assets/kansai05 http://kanrk05.herokuapp.com/assets/kansai05 permanent;
     }
 
     #
