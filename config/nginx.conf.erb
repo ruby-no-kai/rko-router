@@ -65,6 +65,36 @@ http {
       proxy_pass http://okinawarb.github.io;
     }
 
+    #
+    # shibuya01, y6y
+    #
+    location ~ ^/shibuya01(.*) {
+    proxy_pass http://shibuyarb.github.io;
+    }
+
+    #
+    # tokyu08, y6y
+    #
+    location ~ ^/tokyu08(.*) {
+    proxy_pass http://tokyurb.github.io;
+    }
+
+    #
+    # kanagawa01, y6y
+    #
+    location ~ ^/kana01(.*) {
+    proxy_pass http://kawasakirb.github.io;
+    }
+
+    location ~ ^/oedo04(.*) {
+    proxy_pass http://oedo04.herokuapp.com;
+    }
+
+    location ~ ^/hamamatsu01(.*) {
+    proxy_pass http://rubykaigi-hamamatsu.s3-website-ap-northeast-1.amazonaws.com;
+    }
+
+
     # regional.rubykairi.org
     location / {
       proxy_set_header Host $host;
