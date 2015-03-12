@@ -140,6 +140,18 @@ http {
       rewrite ^(.*)$ http://jp.rubyist.net/RubyKaigi$rubykaigi_year permanent;
     }
 
+    location ~ ^/2006(.*) {
+        proxy_pass http://linode.rubykaigi.org;
+    }
+
+    location ~ ^/2007(.*) {
+        proxy_pass http://linode.rubykaigi.org;
+    }
+
+    location ~ ^/2008(.*) {
+        proxy_pass http://linode.rubykaigi.org;
+    }
+
     location ~ ^/2009(.*) {
         proxy_pass http://linode.rubykaigi.org;
     }
