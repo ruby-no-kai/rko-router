@@ -89,11 +89,9 @@ http {
     proxy_pass http://rubykaigi-hamamatsu.s3-website-ap-northeast-1.amazonaws.com;
     }
 
-
     # regional.rubykairi.org
     location / {
-      proxy_set_header Host $host;
-      proxy_pass http://linode.rubykaigi.org;
+      proxy_pass http://regional-gh.rubykaigi.org;
     }
   }
 
