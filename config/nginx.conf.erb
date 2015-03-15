@@ -203,15 +203,6 @@ http {
 
   server {
     listen <%= ENV["PORT"] %>;
-    server_name  staging.rubykaigi.org;
-    location / {
-      proxy_set_header Host $host;
-      proxy_pass http://linode.rubykaigi.org;
-    }
-  }
-
-  server {
-    listen <%= ENV["PORT"] %>;
     server_name sapporo.rubykaigi.org;
     location / {
       proxy_set_header Host $host;
