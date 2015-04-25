@@ -40,6 +40,13 @@ http {
     }
 
     #
+    # kansai 06, y10y
+    #
+    location ~ ^/kansai06(.*) {
+      proxy_pass http://rubykansai.github.io;
+    }
+
+    #
     # kansai 05, y10y
     #
     location ~ ^/kansai05(.*) {
