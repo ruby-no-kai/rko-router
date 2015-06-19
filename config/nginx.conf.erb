@@ -223,4 +223,13 @@ http {
       proxy_pass http://ruby-sapporo.github.io;
     }
   }
+
+ server {
+    listen <%= ENV["PORT"] %>;
+    server_name cfp.rubykaigi.org;
+    location / {
+      proxy_set_header Host $host;
+      proxy_pass http://rubykaigi-cfp.herokuapp.com;
+    }
+  }
 }
