@@ -223,4 +223,12 @@ http {
       proxy_pass http://ruby-sapporo.github.io;
     }
   }
+
+  server {
+    listen <%= ENV["PORT"] %>;
+    server_name cfp.rubykaigi.org;
+    location / {
+      return 302 https://rubykaigi-cfp.herokuapp.com;
+    }
+  }
 }
