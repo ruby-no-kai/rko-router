@@ -107,6 +107,10 @@ http {
       return 301 http://matsue.rubyist.net/matrk07/;
     }
 
+    location ~ ^/oedo05(.*) {
+     proxy_pass http://asakusarb.github.io;
+    }
+
     # regional.rubykairi.org
     location / {
       proxy_pass http://regional-gh.rubykaigi.org;
