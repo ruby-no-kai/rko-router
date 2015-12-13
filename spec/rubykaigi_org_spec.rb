@@ -139,17 +139,15 @@ describe "http://rubykaigi.org" do
 
   describe "/2005" do
     let(:res) { connection.get("http://rubykaigi.org/2005") }
-    it "redirects to /2005" do
-      expect(res.status).to eq(302) # NOTE 404 may be better
-      expect(res.headers["location"]).to eq("http://rubykaigi.org/2005/en")
+    it "should be 404" do
+      expect(res.status).to eq(404)
     end
   end
 
   describe "/2005/en" do
     let(:res) { connection.get("http://rubykaigi.org/2005/en") }
-    it "should redirect to http://jp.rubyist.net/RubyKaigi2005" do
-      expect(res.status).to eq(302) # NOTE 404 may be better
-      expect(res.headers["location"]).to eq("http://jp.rubyist.net/RubyKaigi2005")
+    it "should be 404" do
+      expect(res.status).to eq(404)
     end
   end
 
