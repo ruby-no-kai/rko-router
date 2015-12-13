@@ -5,23 +5,32 @@ describe "http://rubykaigi.org" do
     let(:res) { connection.get("http://rubykaigi.org/") }
     it "redirects to /?locale=en" do
       expect(res.status).to eq(302)
-      expect(res.headers["location"]).to eq("http://rubykaigi.org/2014")
+      expect(res.headers["location"]).to eq("http://rubykaigi.org/2015")
     end
   end
 
   describe "/?locale=en" do
     let(:res) { connection.get("http://rubykaigi.org/?locale=en") }
-    it "redirects to /2014" do
+    it "redirects to /2015" do
       expect(res.status).to eq(302)
-      expect(res.headers["location"]).to eq("http://rubykaigi.org/2014")
+      expect(res.headers["location"]).to eq("http://rubykaigi.org/2015")
     end
   end
 
   describe "/?locale=ja" do
     let(:res) { connection.get("http://rubykaigi.org/?locale=ja") }
-    it "redirects to /2014" do
+    it "redirects to /2015" do
       expect(res.status).to eq(302)
-      expect(res.headers["location"]).to eq("http://rubykaigi.org/2014")
+      expect(res.headers["location"]).to eq("http://rubykaigi.org/2015")
+    end
+  end
+
+  (2014..2016).each do |year|
+    describe "/#{year}" do
+      let(:res) { connection.get("http://rubykaigi.org/#{year}") }
+      it "should be available" do
+        expect(res.status).to eq(200)
+      end
     end
   end
 
@@ -139,17 +148,15 @@ describe "http://rubykaigi.org" do
 
   describe "/2005" do
     let(:res) { connection.get("http://rubykaigi.org/2005") }
-    it "redirects to /2005" do
-      expect(res.status).to eq(302) # NOTE 404 may be better
-      expect(res.headers["location"]).to eq("http://rubykaigi.org/2005/en")
+    it "should be 404" do
+      expect(res.status).to eq(404)
     end
   end
 
   describe "/2005/en" do
     let(:res) { connection.get("http://rubykaigi.org/2005/en") }
-    it "should redirect to http://jp.rubyist.net/RubyKaigi2005" do
-      expect(res.status).to eq(302) # NOTE 404 may be better
-      expect(res.headers["location"]).to eq("http://jp.rubyist.net/RubyKaigi2005")
+    it "should be 404" do
+      expect(res.status).to eq(404)
     end
   end
 
