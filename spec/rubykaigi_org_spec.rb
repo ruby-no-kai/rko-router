@@ -25,6 +25,15 @@ describe "http://rubykaigi.org" do
     end
   end
 
+  (2014..2016).each do |year|
+    describe "/#{year}" do
+      let(:res) { connection.get("http://rubykaigi.org/#{year}") }
+      it "should be available" do
+        expect(res.status).to eq(200)
+      end
+    end
+  end
+
   describe "/2013" do
     let(:res) { connection.get("http://rubykaigi.org/2013") }
     it "should render the top page" do
