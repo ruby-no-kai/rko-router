@@ -197,6 +197,10 @@ http {
         proxy_pass http://rubykaigi2015.herokuapp.com;
     }
 
+    location ~ ^/2016(.*) {
+        proxy_pass http://rubykaigi2016.herokuapp.com;
+    }
+
     location ~ ^/\.2006(.*) {
         proxy_pass http://linode.rubykaigi.org;
     }
