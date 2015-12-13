@@ -5,23 +5,23 @@ describe "http://rubykaigi.org" do
     let(:res) { connection.get("http://rubykaigi.org/") }
     it "redirects to /?locale=en" do
       expect(res.status).to eq(302)
-      expect(res.headers["location"]).to eq("http://rubykaigi.org/2014")
+      expect(res.headers["location"]).to eq("http://rubykaigi.org/2015")
     end
   end
 
   describe "/?locale=en" do
     let(:res) { connection.get("http://rubykaigi.org/?locale=en") }
-    it "redirects to /2014" do
+    it "redirects to /2015" do
       expect(res.status).to eq(302)
-      expect(res.headers["location"]).to eq("http://rubykaigi.org/2014")
+      expect(res.headers["location"]).to eq("http://rubykaigi.org/2015")
     end
   end
 
   describe "/?locale=ja" do
     let(:res) { connection.get("http://rubykaigi.org/?locale=ja") }
-    it "redirects to /2014" do
+    it "redirects to /2015" do
       expect(res.status).to eq(302)
-      expect(res.headers["location"]).to eq("http://rubykaigi.org/2014")
+      expect(res.headers["location"]).to eq("http://rubykaigi.org/2015")
     end
   end
 
