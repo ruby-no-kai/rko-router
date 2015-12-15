@@ -111,6 +111,10 @@ http {
      proxy_pass http://asakusarb.github.io;
     }
 
+    location ~ ^/tokyo11(.*) {
+     proxy_pass http://ko1.github.io;
+    }
+
     # regional.rubykairi.org
     location / {
       proxy_pass http://regional-gh.rubykaigi.org;
