@@ -119,6 +119,10 @@ http {
       proxy_pass http://tokyurubykaigi.github.io;
     }
 
+    location ~ ^/kwsk01(.*) {
+      proxy_pass http://kawasakirb.github.io;
+    }
+
     # regional.rubykairi.org
     location / {
       proxy_pass http://regional-gh.rubykaigi.org;
