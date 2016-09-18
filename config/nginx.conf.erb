@@ -103,6 +103,10 @@ http {
     proxy_pass http://rubykaigi-hamamatsu.s3-website-ap-northeast-1.amazonaws.com;
     }
 
+    location ~ ^/(matrk|matsue)08(.*) {
+      return 301 http://matsue.rubyist.net/matrk08/;
+    }
+
     location ~ ^/(matrk|matsue)07(.*) {
       return 301 http://matsue.rubyist.net/matrk07/;
     }
