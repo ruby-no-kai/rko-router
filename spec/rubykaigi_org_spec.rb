@@ -1,27 +1,29 @@
 require_relative "./spec_helper"
 
 describe "http://rubykaigi.org" do
+  let(:latest_year) { "2016" }
+
   describe "/" do
     let(:res) { connection.get("http://rubykaigi.org/") }
     it "redirects to /?locale=en" do
       expect(res.status).to eq(302)
-      expect(res.headers["location"]).to eq("http://rubykaigi.org/2015")
+      expect(res.headers["location"]).to eq("http://rubykaigi.org/#{latest_year}")
     end
   end
 
   describe "/?locale=en" do
     let(:res) { connection.get("http://rubykaigi.org/?locale=en") }
-    it "redirects to /2015" do
+    it "redirects to the latest" do
       expect(res.status).to eq(302)
-      expect(res.headers["location"]).to eq("http://rubykaigi.org/2015")
+      expect(res.headers["location"]).to eq("http://rubykaigi.org/#{latest_year}")
     end
   end
 
   describe "/?locale=ja" do
     let(:res) { connection.get("http://rubykaigi.org/?locale=ja") }
-    it "redirects to /2015" do
+    it "redirects to the latest" do
       expect(res.status).to eq(302)
-      expect(res.headers["location"]).to eq("http://rubykaigi.org/2015")
+      expect(res.headers["location"]).to eq("http://rubykaigi.org/#{latest_year}")
     end
   end
 
