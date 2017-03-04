@@ -217,6 +217,10 @@ http {
         proxy_pass http://rk2016.herokuapp.com;
     }
 
+    location ~ ^/2017(.*) {
+        proxy_pass http://rubykaigi2017.herokuapp.com;
+    }
+
     location ~ ^/\.2006(.*) {
         proxy_pass http://linode.rubykaigi.org;
     }
@@ -231,7 +235,7 @@ http {
 
     # current rubykaigi
     location = / {
-        return 302 http://rubykaigi.org/2016;
+        return 302 http://rubykaigi.org/2017;
     }
 
     location ~* /([0-9][0-9][0-9][0-9])?(images|javascripts|stylehseets)/ {
