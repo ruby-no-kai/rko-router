@@ -115,8 +115,12 @@ http {
       return 301 http://matsue.rubyist.net/matrk07/;
     }
 
-    location ~ ^/oedo0[56](.*) {
+    location ~ ^/oedo05(.*) {
      proxy_pass http://asakusarb.github.io;
+    }
+
+    location ~ ^/oedo06(.*) {
+     proxy_pass https://asakusarb.github.io;
     }
 
     location ~ ^/tokyo11(.*) {
@@ -222,6 +226,7 @@ http {
     }
 
     location ~ ^/2017(.*) {
+
         proxy_pass http://rubykaigi2017.herokuapp.com;
     }
 
