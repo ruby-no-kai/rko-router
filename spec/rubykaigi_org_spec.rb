@@ -1,7 +1,7 @@
 require_relative "./spec_helper"
 
 describe "http://rubykaigi.org" do
-  let(:latest_year) { "2016" }
+  let(:latest_year) { "2017" }
 
   describe "/" do
     let(:res) { connection.get("http://rubykaigi.org/") }
@@ -27,7 +27,7 @@ describe "http://rubykaigi.org" do
     end
   end
 
-  (2014..2016).each do |year|
+  (2014..2017).each do |year|
     describe "/#{year}" do
       let(:res) { connection.get("http://rubykaigi.org/#{year}") }
       it "should be available" do
