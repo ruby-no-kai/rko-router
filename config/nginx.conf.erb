@@ -226,8 +226,11 @@ http {
     }
 
     location ~ ^/2017(.*) {
-
         proxy_pass http://rubykaigi2017.herokuapp.com;
+    }
+
+    location ~ ^/2018(.*) {
+        proxy_pass http://rubykaigi2018.herokuapp.com;
     }
 
     location ~ ^/\.2006(.*) {
