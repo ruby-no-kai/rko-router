@@ -1,7 +1,7 @@
 require_relative "./spec_helper"
 
 describe "http://rubykaigi.org" do
-  let(:latest_year) { "2017" }
+  let(:latest_year) { "2018" }
 
   describe "/" do
     let(:res) { connection.get("http://rubykaigi.org/") }
@@ -45,23 +45,23 @@ describe "http://rubykaigi.org" do
   end
 
   describe "/2012" do
-    let(:res) { connection.get("http://rubykaigi.org/2012") }
-    it "should render the special 404 page" do
-      expect(res.status).to eq(404)
+    let(:res) { connection.get("http://rubykaigi.org/2012/") }
+    it "should render the special 200 (not 404) page" do
+      expect(res.status).to eq(200)
       expect(res.body).to include("<title>RubyKaigi 2012: 404 Kaigi Not Found</title>")
     end
   end
 
   describe "/2011" do
     let(:res) { connection.get("http://rubykaigi.org/2011") }
-    it "redirects to /2011/en" do
-      expect(res.status).to eq(302)
-      expect(res.headers["location"]).to eq("http://rubykaigi.org/2011/en")
+    it "redirects to /2011/" do
+      expect(res.status).to eq(301)
+      expect(res.headers["location"]).to eq("http://rubykaigi.org/2011/")
     end
   end
 
-  describe "/2011/en" do
-    let(:res) { connection.get("http://rubykaigi.org/2011/en") }
+  describe "/2011/" do
+    let(:res) { connection.get("http://rubykaigi.org/2011/") }
     it "should render the top page" do
       expect(res.status).to eq(200)
       expect(res.body).to include("<title>RubyKaigi 2011(July 16 - 18)</title>")
@@ -70,14 +70,14 @@ describe "http://rubykaigi.org" do
 
   describe "/2010" do
     let(:res) { connection.get("http://rubykaigi.org/2010") }
-    it "redirects to /2010" do
-      expect(res.status).to eq(302)
-      expect(res.headers["location"]).to eq("http://rubykaigi.org/2010/en")
+    it "redirects to /2010/" do
+      expect(res.status).to eq(301)
+      expect(res.headers["location"]).to eq("http://rubykaigi.org/2010/")
     end
   end
 
-  describe "/2010/en" do
-    let(:res) { connection.get("http://rubykaigi.org/2010/en") }
+  describe "/2010/en/" do
+    let(:res) { connection.get("http://rubykaigi.org/2010/en/") }
     it "should render the top page" do
       expect(res.status).to eq(200)
       expect(res.body).to include("<title>RubyKaigi 2010, August 27-29</title>")
@@ -86,14 +86,14 @@ describe "http://rubykaigi.org" do
 
   describe "/2009" do
     let(:res) { connection.get("http://rubykaigi.org/2009") }
-    it "redirects to /2009" do
-      expect(res.status).to eq(302)
-      expect(res.headers["location"]).to eq("http://rubykaigi.org/2009/en")
+    it "redirects to /2009/" do
+      expect(res.status).to eq(301)
+      expect(res.headers["location"]).to eq("http://rubykaigi.org/2009/")
     end
   end
 
-  describe "/2009/en" do
-    let(:res) { connection.get("http://rubykaigi.org/2009/en") }
+  describe "/2009/en/" do
+    let(:res) { connection.get("http://rubykaigi.org/2009/en/") }
     it "should render the top page" do
       expect(res.status).to eq(200)
       expect(res.body).to include("<title>RubyKaigi2009</title>")
@@ -102,48 +102,48 @@ describe "http://rubykaigi.org" do
 
   describe "/2008" do
     let(:res) { connection.get("http://rubykaigi.org/2008") }
-    it "redirects to /2008" do
-      expect(res.status).to eq(302)
-      expect(res.headers["location"]).to eq("http://rubykaigi.org/2008/en")
+    it "redirects to http://jp.rubyist.net/RubyKaigi2008" do
+      expect(res.status).to eq(301)
+      expect(res.headers["location"]).to eq("http://jp.rubyist.net/RubyKaigi2008")
     end
   end
 
   describe "/2008/en" do
     let(:res) { connection.get("http://rubykaigi.org/2008/en") }
     it "should redirect to http://jp.rubyist.net/RubyKaigi2008" do
-      expect(res.status).to eq(302)
+      expect(res.status).to eq(301)
       expect(res.headers["location"]).to eq("http://jp.rubyist.net/RubyKaigi2008")
     end
   end
 
   describe "/2007" do
     let(:res) { connection.get("http://rubykaigi.org/2007") }
-    it "redirects to /2007" do
-      expect(res.status).to eq(302)
-      expect(res.headers["location"]).to eq("http://rubykaigi.org/2007/en")
+    it "redirects to http://jp.rubyist.net/RubyKaigi2007" do
+      expect(res.status).to eq(301)
+      expect(res.headers["location"]).to eq("http://jp.rubyist.net/RubyKaigi2007")
     end
   end
 
   describe "/2007/en" do
     let(:res) { connection.get("http://rubykaigi.org/2007/en") }
     it "should redirect to http://jp.rubyist.net/RubyKaigi2007" do
-      expect(res.status).to eq(302)
+      expect(res.status).to eq(301)
       expect(res.headers["location"]).to eq("http://jp.rubyist.net/RubyKaigi2007")
     end
   end
 
   describe "/2006" do
     let(:res) { connection.get("http://rubykaigi.org/2006") }
-    it "redirects to /2006" do
-      expect(res.status).to eq(302)
-      expect(res.headers["location"]).to eq("http://rubykaigi.org/2006/en")
+    it "redirects to http://jp.rubyist.net/RubyKaigi2006" do
+      expect(res.status).to eq(301)
+      expect(res.headers["location"]).to eq("http://jp.rubyist.net/RubyKaigi2006")
     end
   end
 
   describe "/2006/en" do
     let(:res) { connection.get("http://rubykaigi.org/2006/en") }
     it "should redirect to http://jp.rubyist.net/RubyKaigi2006" do
-      expect(res.status).to eq(302)
+      expect(res.status).to eq(301)
       expect(res.headers["location"]).to eq("http://jp.rubyist.net/RubyKaigi2006")
     end
   end
