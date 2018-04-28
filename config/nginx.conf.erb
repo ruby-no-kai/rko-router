@@ -83,6 +83,13 @@ http {
     }
 
     #
+    # tokyu12, y6y
+    #
+    location ~ ^/tokyu12(.*) {
+      proxy_pass http://tokyurubykaigi.github.io;
+    }
+
+    #
     # tokyu11, y6y
     #
     location ~ ^/tokyu11(.*) {
