@@ -29,10 +29,29 @@ http {
 
   port_in_redirect off;
 
+  proxy_ssl_server_name on;
+
+  rewrite_log <%= ENV.fetch("REWRITE_LOG", 'off') %>;
+
+  server {
+    listen <%= ENV["PORT"] %> default_server;
+    server_name rko-router.herokuapp.com;
+
+    default_type text/plain;
+
+    location / {
+      if ( $http_x_rko_host = "" ) {
+        return 404 "rko-router";
+      }
+
+      proxy_set_header Host $http_x_rko_host;
+      proxy_pass http://localhost:<%= ENV["PORT"] %>;
+    }
+  }
+
   server {
     listen <%= ENV["PORT"] %>;
     server_name regional.rubykaigi.org;
-
 
     location ~ ^/oedo03(.*) {
       proxy_pass http://oedo03.herokuapp.com;
@@ -51,7 +70,7 @@ http {
     # kansai 06, y10y
     #
     location ~ ^/kansai06(.*) {
-      proxy_pass http://rubykansai.github.io;
+      proxy_pass https://rubykansai.github.io;
     }
 
     #
@@ -65,56 +84,56 @@ http {
     # chuork 01, y6y
     #
     location ~ ^/chuork01(.*) {
-      proxy_pass http://chuork.github.io;
+      proxy_pass https://chuork.github.io;
     }
 
     #
     # okrk01, y6y
     #
     location ~ ^/okrk01(.*) {
-      proxy_pass http://okinawarb.github.io;
+      proxy_pass https://okinawarb.github.io;
     }
 
     #
     # shibuya01, y6y
     #
     location ~ ^/shibuya01(.*) {
-    proxy_pass http://shibuyarb.github.io;
+    proxy_pass https://shibuyarb.github.io;
     }
 
     #
     # tokyu12, y6y
     #
     location ~ ^/tokyu12(.*) {
-      proxy_pass http://tokyurubykaigi.github.io;
+      proxy_pass https://tokyurubykaigi.github.io;
     }
 
     #
     # tokyu11, y6y
     #
     location ~ ^/tokyu11(.*) {
-      proxy_pass http://tokyurubykaigi.github.io;
+      proxy_pass https://tokyurubykaigi.github.io;
     }
 
     #
     # tokyu09, y6y
     #
     location ~ ^/tokyu09(.*) {
-      proxy_pass http://tokyurubykaigi.github.io;
+      proxy_pass https://tokyurubykaigi.github.io;
     }
 
     #
     # tokyu08, y6y
     #
     location ~ ^/tokyu08(.*) {
-    proxy_pass http://tokyurb.github.io;
+    proxy_pass https://tokyurb.github.io;
     }
 
     #
     # kanagawa01, y6y
     #
     location ~ ^/kana01(.*) {
-    proxy_pass http://kawasakirb.github.io;
+    proxy_pass https://kawasakirb.github.io;
     }
 
     location ~ ^/oedo04(.*) {
@@ -134,7 +153,7 @@ http {
     }
 
     location ~ ^/oedo05(.*) {
-     proxy_pass http://asakusarb.github.io;
+     proxy_pass https://asakusarb.github.io;
     }
 
     location ~ ^/oedo06(.*) {
@@ -142,20 +161,21 @@ http {
     }
 
     location ~ ^/tokyo11(.*) {
-     proxy_pass http://ko1.github.io;
+     proxy_pass https://ko1.github.io;
     }
 
     location ~ ^/tokyu10(.*) {
-      proxy_pass http://tokyurubykaigi.github.io;
+      proxy_pass https://tokyurubykaigi.github.io;
     }
 
     location ~ ^/kwsk01(.*) {
-      proxy_pass http://kawasakirb.github.io;
+      proxy_pass https://kawasakirb.github.io;
     }
 
     # regional.rubykairi.org
     location / {
-      proxy_pass http://regional-gh.rubykaigi.org;
+      proxy_set_header Host regional-gh.rubykaigi.org;
+      proxy_pass https://regional-gh.rubykaigi.org;
     }
   }
 
@@ -180,19 +200,27 @@ http {
 
   server {
     listen <%= ENV["PORT"] %>;
-    server_name  rubykaigi.org www.rubykaigi.org ~^200[6-8]\.rubykaigi\.org$;
-
-    rewrite_log on;
+    server_name www.rubykaigi.org;
 
     if ($host ~* www\.(.*)) {
       set $host_without_www $1;
       rewrite ^(.*)$ http://$host_without_www permanent;
     }
+  }
 
-    if ($host ~* (200[6-8])\.(.*)) {
+  server {
+    listen <%= ENV["PORT"] %>;
+    server_name ~^200[6-8]\.rubykaigi\.org$;
+
+    if ($host ~* ^(\d+)\.(.*)) {
       set $rubykaigi_year $1;
       rewrite ^(.*)$ http://jp.rubyist.net/RubyKaigi$rubykaigi_year permanent;
     }
+  }
+
+  server {
+    listen <%= ENV["PORT"] %>;
+    server_name rubykaigi.org;
 
     location ~ ^/(200[6-8])(.*) {
         set $rubykaigi_year $1;
@@ -279,7 +307,7 @@ http {
     server_name sapporo.rubykaigi.org;
     location / {
       proxy_set_header Host $host;
-      proxy_pass http://ruby-sapporo.github.io;
+      proxy_pass https://ruby-sapporo.github.io;
     }
   }
 
