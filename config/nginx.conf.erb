@@ -200,19 +200,27 @@ http {
 
   server {
     listen <%= ENV["PORT"] %>;
-    server_name  rubykaigi.org www.rubykaigi.org ~^200[6-8]\.rubykaigi\.org$;
-
-    rewrite_log <%= ENV.fetch("REWRITE_LOG", 'off') %>;
+    server_name www.rubykaigi.org;
 
     if ($host ~* www\.(.*)) {
       set $host_without_www $1;
       rewrite ^(.*)$ http://$host_without_www permanent;
     }
+  }
 
-    if ($host ~* (200[6-8])\.(.*)) {
+  server {
+    listen <%= ENV["PORT"] %>;
+    server_name ~^200[6-8]\.rubykaigi\.org$;
+
+    if ($host ~* ^(\d+)\.(.*)) {
       set $rubykaigi_year $1;
       rewrite ^(.*)$ http://jp.rubyist.net/RubyKaigi$rubykaigi_year permanent;
     }
+  }
+
+  server {
+    listen <%= ENV["PORT"] %>;
+    server_name rubykaigi.org;
 
     location ~ ^/(200[6-8])(.*) {
         set $rubykaigi_year $1;
