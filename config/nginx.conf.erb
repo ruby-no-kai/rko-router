@@ -70,7 +70,7 @@ http {
     # kansai 06, y10y
     #
     location ~ ^/kansai06(.*) {
-      proxy_pass http://rubykansai.github.io;
+      proxy_pass https://rubykansai.github.io;
     }
 
     #
@@ -84,56 +84,56 @@ http {
     # chuork 01, y6y
     #
     location ~ ^/chuork01(.*) {
-      proxy_pass http://chuork.github.io;
+      proxy_pass https://chuork.github.io;
     }
 
     #
     # okrk01, y6y
     #
     location ~ ^/okrk01(.*) {
-      proxy_pass http://okinawarb.github.io;
+      proxy_pass https://okinawarb.github.io;
     }
 
     #
     # shibuya01, y6y
     #
     location ~ ^/shibuya01(.*) {
-    proxy_pass http://shibuyarb.github.io;
+    proxy_pass https://shibuyarb.github.io;
     }
 
     #
     # tokyu12, y6y
     #
     location ~ ^/tokyu12(.*) {
-      proxy_pass http://tokyurubykaigi.github.io;
+      proxy_pass https://tokyurubykaigi.github.io;
     }
 
     #
     # tokyu11, y6y
     #
     location ~ ^/tokyu11(.*) {
-      proxy_pass http://tokyurubykaigi.github.io;
+      proxy_pass https://tokyurubykaigi.github.io;
     }
 
     #
     # tokyu09, y6y
     #
     location ~ ^/tokyu09(.*) {
-      proxy_pass http://tokyurubykaigi.github.io;
+      proxy_pass https://tokyurubykaigi.github.io;
     }
 
     #
     # tokyu08, y6y
     #
     location ~ ^/tokyu08(.*) {
-    proxy_pass http://tokyurb.github.io;
+    proxy_pass https://tokyurb.github.io;
     }
 
     #
     # kanagawa01, y6y
     #
     location ~ ^/kana01(.*) {
-    proxy_pass http://kawasakirb.github.io;
+    proxy_pass https://kawasakirb.github.io;
     }
 
     location ~ ^/oedo04(.*) {
@@ -153,7 +153,7 @@ http {
     }
 
     location ~ ^/oedo05(.*) {
-     proxy_pass http://asakusarb.github.io;
+     proxy_pass https://asakusarb.github.io;
     }
 
     location ~ ^/oedo06(.*) {
@@ -161,20 +161,21 @@ http {
     }
 
     location ~ ^/tokyo11(.*) {
-     proxy_pass http://ko1.github.io;
+     proxy_pass https://ko1.github.io;
     }
 
     location ~ ^/tokyu10(.*) {
-      proxy_pass http://tokyurubykaigi.github.io;
+      proxy_pass https://tokyurubykaigi.github.io;
     }
 
     location ~ ^/kwsk01(.*) {
-      proxy_pass http://kawasakirb.github.io;
+      proxy_pass https://kawasakirb.github.io;
     }
 
     # regional.rubykairi.org
     location / {
-      proxy_pass http://regional-gh.rubykaigi.org;
+      proxy_set_header Host regional-gh.rubykaigi.org;
+      proxy_pass https://regional-gh.rubykaigi.org;
     }
   }
 
@@ -298,7 +299,7 @@ http {
     server_name sapporo.rubykaigi.org;
     location / {
       proxy_set_header Host $host;
-      proxy_pass http://ruby-sapporo.github.io;
+      proxy_pass https://ruby-sapporo.github.io;
     }
   }
 
