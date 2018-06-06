@@ -244,6 +244,10 @@ http {
         proxy_pass http://rubykaigi2018.herokuapp.com;
     }
 
+    location ~ ^/2019(.*) {
+        proxy_pass http://rubykaigi2019.herokuapp.com;
+    }
+
     location ~ ^/\.2006(.*) {
         proxy_pass http://2009-2011.rubykaigi.org;
     }
