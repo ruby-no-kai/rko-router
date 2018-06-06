@@ -29,6 +29,10 @@ http {
 
   port_in_redirect off;
 
+  proxy_ssl_server_name on;
+
+  rewrite_log <%= ENV.fetch("REWRITE_LOG", 'off') %>;
+
   server {
     listen <%= ENV["PORT"] %>;
     server_name regional.rubykaigi.org;
@@ -182,7 +186,7 @@ http {
     listen <%= ENV["PORT"] %>;
     server_name  rubykaigi.org www.rubykaigi.org ~^200[6-8]\.rubykaigi\.org$;
 
-    rewrite_log on;
+    rewrite_log <%= ENV.fetch("REWRITE_LOG", 'off') %>;
 
     if ($host ~* www\.(.*)) {
       set $host_without_www $1;
