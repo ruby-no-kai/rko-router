@@ -34,6 +34,21 @@ http {
   rewrite_log <%= ENV.fetch("REWRITE_LOG", 'off') %>;
 
   server {
+    listen <%= ENV["PORT"] %> default_server;
+    server_name rko-router.herokuapp.com;
+
+    default_type text/plain;
+
+    location = / {
+      return 200 "rko-router";
+    }
+
+    location / {
+      return 404 "four-oh-four";
+    }
+  }
+
+  server {
     listen <%= ENV["PORT"] %>;
     server_name regional.rubykaigi.org;
 
