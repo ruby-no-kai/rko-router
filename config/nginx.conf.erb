@@ -39,19 +39,19 @@ http {
 
     default_type text/plain;
 
-    location = / {
-      return 200 "rko-router";
-    }
-
     location / {
-      return 404 "four-oh-four";
+      if ( $http_x_rko_host = "" ) {
+        return 404 "rko-router";
+      }
+
+      proxy_set_header Host $http_x_rko_host;
+      proxy_pass http://localhost:<%= ENV["PORT"] %>;
     }
   }
 
   server {
     listen <%= ENV["PORT"] %>;
     server_name regional.rubykaigi.org;
-
 
     location ~ ^/oedo03(.*) {
       proxy_pass http://oedo03.herokuapp.com;
