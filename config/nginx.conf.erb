@@ -311,10 +311,12 @@ http {
     }
 
     location ~ ^/2017(.*) {
+        include force_https.conf;
         proxy_pass http://rubykaigi2017.herokuapp.com;
     }
 
     location ~ ^/2018(.*) {
+        include force_https.conf;
         proxy_pass http://rubykaigi2018.herokuapp.com;
     }
 
