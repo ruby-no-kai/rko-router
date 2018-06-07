@@ -162,5 +162,22 @@ describe "http://rubykaigi.org" do
     end
   end
 
+  describe "/2019" do
+    context "https" do
+      let(:res) { http_get("https://rubykaigi.org/2019") }
+      it "should be 200" do
+        expect(res.code).to eq("200")
+      end
+    end
+
+    context "http" do
+      let(:res) { http_get("https://rubykaigi.org/2019", proto: 'http') }
+      it "should force https" do
+        expect(res.code).to eq("301")
+        expect(res["location"]).to eq("https://rubykaigi.org/2019")
+      end
+    end
+  end
+
   # TODO consider ja locale case
 end

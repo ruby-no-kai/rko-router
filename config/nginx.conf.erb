@@ -45,6 +45,7 @@ http {
       }
 
       proxy_set_header Host $http_x_rko_host;
+      proxy_set_header X-Forwarded-Proto $http_x_rko_xfp;
       proxy_pass http://localhost:<%= ENV["PORT"] %>;
     }
   }
@@ -273,6 +274,7 @@ http {
     }
 
     location ~ ^/2019(.*) {
+        include force_https.conf;
         proxy_pass http://rubykaigi2019.herokuapp.com;
     }
 
@@ -291,6 +293,7 @@ http {
     # current rubykaigi
     location = / {
         return 302 http://rubykaigi.org/2018;
+        # return 302 https://rubykaigi.org/2019;
     }
 
     location ~* /([0-9][0-9][0-9][0-9])?(images|javascripts|stylehseets)/ {
