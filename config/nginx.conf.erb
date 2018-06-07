@@ -1,3 +1,5 @@
+<% primary_host = ENV.fetch('PRIMARY_HOST', 'rko-router.herokuapp.com') %>
+
 daemon off;
 #Heroku dynos have 4 cores.
 worker_processes 4;
@@ -17,6 +19,18 @@ http {
     '$http_x_forwarded_for - $remote_user [$time_local] '
     '"$request" $status $bytes_sent '
     '"$http_referer" "$http_user_agent" "$gzip_ratio"';
+
+  log_format csp_report 'measure#nginx.service=$request_time request_id=$http_x_request_id xff=$http_x_forwarded_for referer="$http_referer" ua="$http_user_agent" csp.report=$request_body';
+  map $status $csp_loggable {
+      "200"  1;
+      default 0;
+  }
+  map $content_type $csp_bad_content_type {
+      default 1;
+      "application/json" 0;
+      "application/csp-report" 0;
+  }
+
   access_log logs/nginx/access.log l2met;
   error_log logs/nginx/access.log;
 
@@ -35,13 +49,40 @@ http {
 
   server {
     listen <%= ENV["PORT"] %> default_server;
-    server_name rko-router.herokuapp.com;
+    server_name <%= primary_host %> localhost;
 
     default_type text/plain;
 
+    location = /_200 {
+      access_log off;
+      return 200;
+    }
+
+    location = /_csp {
+      if ($request_method != "POST") {
+          return 405;
+      }
+
+      if ($csp_bad_content_type) {
+          return 415;
+      }
+
+      access_log logs/nginx/access.log csp_report;
+
+      # To enable $request_body
+      proxy_set_header Host localhost;
+      proxy_pass http://localhost:<%= ENV["PORT"] %>/_200;
+    }
+
+    location = /_csp_test {
+      add_header Content-Security-Policy-Report-Only "default-src https: 'self' 'unsafe-inline' 'unsafe-eval'; report-uri https://<%= primary_host %>/_csp";
+      default_type text/html;
+      return 200 "<img src='http://img.sorah.jp/s/2018-06-07_1506_89adg.png'>";
+    }
+
     location / {
       if ( $http_x_rko_host = "" ) {
-        return 404 "rko-router";
+        return 404 "<%= primary_host %>";
       }
 
       proxy_set_header Host $http_x_rko_host;
@@ -53,6 +94,8 @@ http {
   server {
     listen <%= ENV["PORT"] %>;
     server_name regional.rubykaigi.org;
+
+    add_header Content-Security-Policy-Report-Only "default-src https: 'self' 'unsafe-inline' 'unsafe-eval'; report-uri https://<%= primary_host %>/_csp";
 
     location ~ ^/oedo03(.*) {
       proxy_pass http://oedo03.herokuapp.com;
@@ -222,6 +265,8 @@ http {
   server {
     listen <%= ENV["PORT"] %>;
     server_name rubykaigi.org;
+
+    add_header Content-Security-Policy-Report-Only "default-src https: 'self' 'unsafe-inline' 'unsafe-eval'; report-uri https://<%= primary_host %>/_csp";
 
     location ~ ^/(200[6-8])(.*) {
         set $rubykaigi_year $1;
