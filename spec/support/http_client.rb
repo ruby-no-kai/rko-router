@@ -3,7 +3,7 @@ require 'net/https'
 require 'uri'
 
 module Helpers
-  def http_get(url)
+  def http_get(url, proto: 'https')
     uri = URI.parse(url)
     target = URI.parse(ENV.fetch('TARGET_HOST', url))
 
@@ -11,7 +11,12 @@ module Helpers
     http.use_ssl = true if target.scheme == 'https'
 
     http.start do
-      http.get(uri.path, {'x-rko-host' => uri.host, 'Host' => target.host})
+      headers = {
+        'Host' => target.host,
+        'x-rko-host' => uri.host,
+        'x-rko-xfp' => proto,
+      }
+      http.get(uri.path, headers)
     end
   end
 end
