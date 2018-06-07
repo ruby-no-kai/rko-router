@@ -95,7 +95,11 @@ http {
     listen <%= ENV["PORT"] %>;
     server_name regional.rubykaigi.org;
 
-    add_header Content-Security-Policy-Report-Only "default-src https: 'self' 'unsafe-inline' 'unsafe-eval'; report-uri https://<%= primary_host %>/_csp";
+    set $csp_policy "";
+    if ($http_x_forwarded_proto = "https") {
+      set $csp_policy "default-src https: 'self' 'unsafe-inline' 'unsafe-eval'; report-uri https://<%= primary_host %>/_csp";
+    }
+    add_header Content-Security-Policy-Report-Only "$csp_policy";
 
     location ~ ^/oedo03(.*) {
       proxy_pass http://oedo03.herokuapp.com;
@@ -266,7 +270,11 @@ http {
     listen <%= ENV["PORT"] %>;
     server_name rubykaigi.org;
 
-    add_header Content-Security-Policy-Report-Only "default-src https: 'self' 'unsafe-inline' 'unsafe-eval'; report-uri https://<%= primary_host %>/_csp";
+    set $csp_policy "";
+    if ($http_x_forwarded_proto = "https") {
+      set $csp_policy "default-src https: 'self' 'unsafe-inline' 'unsafe-eval'; report-uri https://<%= primary_host %>/_csp";
+    }
+    add_header Content-Security-Policy-Report-Only "$csp_policy";
 
     location ~ ^/(200[6-8])(.*) {
         set $rubykaigi_year $1;
