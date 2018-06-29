@@ -200,11 +200,7 @@ http {
       return 301 http://matsue.rubyist.net/matrk07/;
     }
 
-    location ~ ^/oedo05(.*) {
-     proxy_pass https://asakusarb.github.io;
-    }
-
-    location ~ ^/oedo06(.*) {
+    location ~ ^/oedo0[5-7](.*) {
      proxy_pass https://asakusarb.github.io;
     }
 
