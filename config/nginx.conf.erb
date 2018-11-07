@@ -324,10 +324,8 @@ http {
         proxy_pass http://rubykaigi2018.herokuapp.com;
     }
 
-    location /2019 {
+    location ~ ^/2019(.*) {
         include force_https.conf;
-        rewrite ^/2019$ / break;
-        rewrite ^/2019/(.*)$ /$1 break;
         proxy_pass http://rubykaigi2019.herokuapp.com;
     }
 
@@ -384,4 +382,3 @@ http {
     }
   }
 }
-# vim: ft=nginx
