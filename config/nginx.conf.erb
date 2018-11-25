@@ -348,12 +348,11 @@ http {
     }
   }
 
-  # sponsorship application form for rubykaigi 2018.
   server {
     listen <%= ENV["PORT"] %>;
-    server_name sponsorship.rubykaigi.org sponsorships.rubykaigi.org;
+    server_name sponsorship.rubykaigi.org;
     location / {
-      return 302 https://docs.google.com/forms/d/e/1FAIpQLSfkgH_vh_qu-KJN-w7zJOKtHKginbTSB_8fqzOlcqm9wOJtxw/viewform;
+      return 302 https://sponsorships.rubykaigi.org;
     }
   }
 }
