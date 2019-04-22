@@ -308,6 +308,13 @@ http {
 
     location ~ ^/2019(.*) {
         include force_https.conf;
+        # TODO: Archive
+        proxy_pass http://rubykaigi2019.herokuapp.com;
+    }
+
+    location /2020 {
+        include force_https.conf;
+        # FIXME: We have to rename our heroku app later
         proxy_pass http://rubykaigi2019.herokuapp.com;
     }
 
