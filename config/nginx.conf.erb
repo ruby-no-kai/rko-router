@@ -106,6 +106,10 @@ http {
 #       rewrite ^/oedo03(.*)$ http://oedo03.herokuapp.com/oedo03$1 permanent;
     }
 
+    location ~ ^/osaka02(.*) {
+      proxy_pass https://rubykansai.github.io;
+    }
+
     location ~ ^/osaka01(.*) {
       proxy_pass https://rubykansai.github.io;
     }
