@@ -300,14 +300,9 @@ http {
         rewrite ^/assets/(20[1-9][3-9])(.*)$ http://rubykaigi$1.herokuapp.com/assets/$1$2;
     }
 
-    location ~ ^/2017(.*) {
+    location ~ ^/201[78](.*) {
         include force_https.conf;
         proxy_pass http://2009-2011.rubykaigi.org;
-    }
-
-    location ~ ^/2018(.*) {
-        include force_https.conf;
-        proxy_pass http://rubykaigi2018.herokuapp.com;
     }
 
     location ~ ^/2019(.*) {
