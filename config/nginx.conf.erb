@@ -327,14 +327,6 @@ http {
     location = / {
         return 302 https://rubykaigi.org/2019;
     }
-
-    location ~* /([0-9][0-9][0-9][0-9])?(images|javascripts|stylehseets)/ {
-        proxy_pass http://2009-2011.rubykaigi.org;
-    }
-
-    location ~* .ico$ {
-        proxy_pass http://2009-2011.rubykaigi.org;
-    }
   }
 
   server {
