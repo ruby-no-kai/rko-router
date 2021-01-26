@@ -283,12 +283,7 @@ http {
     }
     add_header Content-Security-Policy-Report-Only "$csp_policy";
 
-    location ~ ^/(200[6-8])(.*) {
-        set $rubykaigi_year $1;
-        rewrite ^(.*)$ http://jp.rubyist.net/RubyKaigi$rubykaigi_year permanent;
-    }
-
-    location ~ ^/2009(.*) {
+    location ~ ^/200[6-9](.*) {
         proxy_pass http://2009-2011.rubykaigi.org;
     }
 
