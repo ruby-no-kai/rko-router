@@ -311,6 +311,10 @@ http {
     }
 
     location /2021 {
+      rewrite ^/2021/?$ https://rubykaigi.org/2021-takeout;
+    }
+
+    location /2021-takeout {
         include force_https.conf;
         # FIXME: We have to rename our heroku app later
         proxy_pass http://rubykaigi2019.herokuapp.com;
