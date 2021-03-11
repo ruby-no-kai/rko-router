@@ -311,7 +311,7 @@ http {
     }
 
     location /2021 {
-      rewrite ^/2021/?$ https://rubykaigi.org/2021-takeout;
+      rewrite ^/2021/?$ https://rubykaigi.org/2021-takeout redirect;
     }
 
     location /2021-takeout {
