@@ -105,11 +105,6 @@ http {
       return 301 https://magazine.rubyist.net/articles/0039/0039-MetPragdaveAtAsakusarb.html;
     }
 
-    location ~ ^/oedo03(.*) {
-      proxy_pass http://oedo03.herokuapp.com;
-#       rewrite ^/oedo03(.*)$ http://oedo03.herokuapp.com/oedo03$1 permanent;
-    }
-
     location ~ ^/osaka02(.*) {
       proxy_pass https://rubykansai.github.io;
     }
