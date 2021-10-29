@@ -279,6 +279,7 @@ http {
     add_header Content-Security-Policy-Report-Only "$csp_policy";
 
     location ~ ^/200[6-9] {
+        include force_https.conf;
         proxy_pass http://2009-2011.rubykaigi.org;
     }
 
