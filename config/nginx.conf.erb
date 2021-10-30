@@ -264,7 +264,8 @@ http {
 
     if ($host ~* ^(\d+)\.(.*)) {
       set $rubykaigi_year $1;
-      rewrite ^(.*)$ http://jp.rubyist.net/RubyKaigi$rubykaigi_year permanent;
+      include force_https.conf;
+      return 301 http://2009-2011.rubykaigi.org/$rubykaigi_year/$request_uri;
     }
   }
 
