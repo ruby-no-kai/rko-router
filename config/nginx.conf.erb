@@ -312,15 +312,7 @@ http {
         proxy_pass http://rubykaigi2019.herokuapp.com;
     }
 
-    location ~ ^/\.2006(.*) {
-        proxy_pass http://2009-2011.rubykaigi.org;
-    }
-
     location ~ ^/\.2007(.*) {
-        proxy_pass http://2009-2011.rubykaigi.org;
-    }
-
-    location ~ ^/\.2008(.*) {
         proxy_pass http://2009-2011.rubykaigi.org;
     }
 
