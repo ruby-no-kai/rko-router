@@ -320,10 +320,6 @@ http {
         proxy_pass http://2009-2011.rubykaigi.org;
     }
 
-    location ~ ^/\.2008(.*) {
-        proxy_pass http://2009-2011.rubykaigi.org;
-    }
-
     # current rubykaigi
     location = / {
         return 302 https://rubykaigi.org/2021-takeout;
