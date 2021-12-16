@@ -303,6 +303,7 @@ http {
     }
 
     location /2022 {
+        include force_https.conf;
         proxy_pass https://gh-pages.rubykaigi.org;
     }
 
