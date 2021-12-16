@@ -302,6 +302,10 @@ http {
       rewrite ^/2021/?$ https://rubykaigi.org/2021-takeout redirect;
     }
 
+    location /2022 {
+        proxy_pass https://gh-pages.rubykaigi.org;
+    }
+
     location /2021-takeout {
         include force_https.conf;
         proxy_pass http://2009-2011.rubykaigi.org;
