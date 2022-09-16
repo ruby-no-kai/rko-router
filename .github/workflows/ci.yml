@@ -1,0 +1,56 @@
+name: ci
+on:
+  push:
+    branches:
+      - master
+      - test
+jobs:
+  ci:
+    name: ci
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: "ap-northeast-1"
+          role-skip-session-tagging: true
+          role-to-assume: "arn:aws:iam::005216166247:role/GhaDockerPush"
+      - id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: 'Build Docker image'
+        uses: 'docker/build-push-action@v3'
+        with:
+          context: '.'
+          load: true
+          tags: "rko-router-test:latest,${{ steps.login-ecr.outputs.registry }}/rko-router:${{ github.sha }},${{ steps.login-ecr.outputs.registry }}/rko-router:latest"
+      - name: 'Start container for test'
+        run: |
+          set -x
+          docker kill rko-router-dut || :
+          docker container wait rko-router-dut || :
+          while docker inspect rko-router-dut >/dev/null; do sleep 1; done
+          docker run --rm --name rko-router-dut --publish 127.0.0.1::8080 --detach rko-router-test:latest
+          export TARGET_HOST="http://$(docker port rko-router-dut 8080)"
+          for i in {1..10}; do
+            if curl -Ssf "${TARGET_HOST}/healthz"; then break; fi
+            sleep 1
+          done
+          curl -f -D- "${TARGET_HOST}/healthz"
+      - name: 'Run test suite'
+        run: |
+          set -x
+          export TARGET_HOST="http://$(docker port rko-router-dut 8080)"
+          bundle exec rspec -fd || ( docker logs rko-router-dut; false )
+      - name: 'Push Docker image'
+        uses: 'docker/build-push-action@v3'
+        with:
+          context: '.'
+          push: true
+          tags: "${{ steps.login-ecr.outputs.registry }}/rko-router:${{ github.sha }},${{ steps.login-ecr.outputs.registry }}/rko-router:latest"
