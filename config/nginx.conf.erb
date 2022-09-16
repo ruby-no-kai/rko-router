@@ -48,7 +48,7 @@ http {
   rewrite_log <%= ENV.fetch("REWRITE_LOG", 'off') %>;
 
   server {
-    listen <%= ENV["PORT"] %> default_server;
+    listen <%= ENV.fetch("PORT") %> default_server;
     server_name <%= primary_host %> localhost;
 
     default_type text/plain;
@@ -71,7 +71,7 @@ http {
 
       # To enable $request_body
       proxy_set_header Host localhost;
-      proxy_pass http://localhost:<%= ENV["PORT"] %>/_200;
+      proxy_pass http://localhost:<%= ENV.fetch("PORT") %>/_200;
     }
 
     location = /_csp_test {
@@ -87,12 +87,12 @@ http {
 
       proxy_set_header Host $http_x_rko_host;
       proxy_set_header X-Forwarded-Proto $http_x_rko_xfp;
-      proxy_pass http://localhost:<%= ENV["PORT"] %>;
+      proxy_pass http://localhost:<%= ENV.fetch("PORT") %>;
     }
   }
 
   server {
-    listen <%= ENV["PORT"] %>;
+    listen <%= ENV.fetch("PORT") %>;
     server_name regional.rubykaigi.org;
 
     set $csp_policy "";
@@ -230,13 +230,13 @@ http {
   }
 
   server {
-    listen <%= ENV["PORT"] %>;
+    listen <%= ENV.fetch("PORT") %>;
     server_name j.rubykaigi.org;
     rewrite ^ http://jrubykaigi.org$request_uri permanent;
   }
 
   server {
-    listen <%= ENV["PORT"] %>;
+    listen <%= ENV.fetch("PORT") %>;
     server_name yami.rubykaigi.org;
 
     location = / {
@@ -249,7 +249,7 @@ http {
   }
 
   server {
-    listen <%= ENV["PORT"] %>;
+    listen <%= ENV.fetch("PORT") %>;
     server_name www.rubykaigi.org;
 
     if ($host ~* www\.(.*)) {
@@ -259,7 +259,7 @@ http {
   }
 
   server {
-    listen <%= ENV["PORT"] %>;
+    listen <%= ENV.fetch("PORT") %>;
     server_name ~^200[6-8]\.rubykaigi\.org$;
 
     if ($host ~* ^(\d+)\.(.*)) {
@@ -269,7 +269,7 @@ http {
   }
 
   server {
-    listen <%= ENV["PORT"] %>;
+    listen <%= ENV.fetch("PORT") %>;
     server_name rubykaigi.org;
 
     set $csp_policy "";
@@ -323,7 +323,7 @@ http {
   }
 
   server {
-    listen <%= ENV["PORT"] %>;
+    listen <%= ENV.fetch("PORT") %>;
     server_name sapporo.rubykaigi.org;
     location / {
       proxy_set_header Host $host;
@@ -332,7 +332,7 @@ http {
   }
 
   server {
-    listen <%= ENV["PORT"] %>;
+    listen <%= ENV.fetch("PORT") %>;
     server_name cfp.rubykaigi.org;
     location / {
       return 302 https://rubykaigi-cfp.herokuapp.com;
@@ -340,7 +340,7 @@ http {
   }
 
   server {
-    listen <%= ENV["PORT"] %>;
+    listen <%= ENV.fetch("PORT") %>;
     server_name sponsorship.rubykaigi.org;
     location / {
       return 302 https://sponsorships.rubykaigi.org;
