@@ -93,9 +93,13 @@ http {
       if ( $http_x_rko_host = "" ) {
         return 404 "<%= primary_host %>\n";
       }
+      if ( $http_x_rko_forwarded = "yes" ) {
+        return 500 "LOOP\n";
+      }
 
       proxy_set_header Host $http_x_rko_host;
       proxy_set_header X-Forwarded-Proto $http_x_rko_xfp;
+      proxy_set_header x-rko-forwarded "yes";
       proxy_pass http://localhost:<%= ENV.fetch("PORT") %>;
     }
   }
