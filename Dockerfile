@@ -6,3 +6,5 @@ COPY docker-entrypoint.d.sh /docker-entrypoint.d/rko-router.sh
 COPY config/nginx.conf.erb /etc/nginx/nginx.conf.erb
 COPY config/force_https.conf /etc/nginx/force_https.conf
 RUN /docker-entrypoint.d/rko-router.sh
+RUN nginx -c /etc/nginx/nginx.conf
+EXPOSE 8080
