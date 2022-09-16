@@ -1,7 +1,7 @@
 require_relative "./spec_helper"
 
 describe "http://rubykaigi.org" do
-  let(:latest_year) { "2018" }
+  let(:latest_year) { "2022" }
 
   describe "/" do
     let(:res) { http_get("http://rubykaigi.org/") }
