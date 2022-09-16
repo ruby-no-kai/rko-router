@@ -1,8 +1,13 @@
 <% primary_host = ENV.fetch('PRIMARY_HOST', 'rko-router.herokuapp.com') %>
+<% platform = ENV.fetch("RKO_ROUTER_PLATFORM", "heroku") %>
 
+<% if platform == 'heroku' %>
 daemon off;
+<% end %>
+
 #Heroku dynos have 4 cores.
 worker_processes 4;
+
 
 events {
   use epoll;
@@ -31,8 +36,8 @@ http {
       "application/csp-report" 0;
   }
 
-  access_log logs/nginx/access.log l2met;
-  error_log logs/nginx/access.log;
+  access_log <%= platform == 'heroku' ? 'logs/nginx/access.log' : '/dev/stdout' %> l2met;
+  error_log <%= platform == 'heroku' ? 'logs/nginx/access.log' : '/dev/stderr' %>;
 
   include mime.types;
   default_type application/octet-stream;
@@ -67,7 +72,7 @@ http {
           return 415;
       }
 
-      access_log logs/nginx/access.log csp_report;
+      access_log <%= platform == 'heroku' ? 'logs/nginx/access.log' : '/dev/stdout' %> csp_report;
 
       # To enable $request_body
       proxy_set_header Host localhost;
