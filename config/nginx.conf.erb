@@ -1,8 +1,13 @@
 <% primary_host = ENV.fetch('PRIMARY_HOST', 'rko-router.herokuapp.com') %>
+<% platform = ENV.fetch("RKO_ROUTER_PLATFORM", "heroku") %>
 
+<% if platform == 'heroku' %>
 daemon off;
+<% end %>
+
 #Heroku dynos have 4 cores.
 worker_processes 4;
+
 
 events {
   use epoll;
@@ -31,8 +36,8 @@ http {
       "application/csp-report" 0;
   }
 
-  access_log logs/nginx/access.log l2met;
-  error_log logs/nginx/access.log;
+  access_log <%= platform == 'heroku' ? 'logs/nginx/access.log' : '/dev/stdout' %> l2met;
+  error_log <%= platform == 'heroku' ? 'logs/nginx/access.log' : '/dev/stderr' %>;
 
   include mime.types;
   default_type application/octet-stream;
@@ -48,7 +53,7 @@ http {
   rewrite_log <%= ENV.fetch("REWRITE_LOG", 'off') %>;
 
   server {
-    listen <%= ENV["PORT"] %> default_server;
+    listen <%= ENV.fetch("PORT") %> default_server;
     server_name <%= primary_host %> localhost;
 
     default_type text/plain;
@@ -67,11 +72,11 @@ http {
           return 415;
       }
 
-      access_log logs/nginx/access.log csp_report;
+      access_log <%= platform == 'heroku' ? 'logs/nginx/access.log' : '/dev/stdout' %> csp_report;
 
       # To enable $request_body
       proxy_set_header Host localhost;
-      proxy_pass http://localhost:<%= ENV["PORT"] %>/_200;
+      proxy_pass http://localhost:<%= ENV.fetch("PORT") %>/_200;
     }
 
     location = /_csp_test {
@@ -80,19 +85,27 @@ http {
       return 200 "<img src='http://img.sorah.jp/s/2018-06-07_1506_89adg.png'>";
     }
 
+    location = /healthz {
+      return 200 "<%= primary_host %>\n";
+    }
+
     location / {
       if ( $http_x_rko_host = "" ) {
-        return 404 "<%= primary_host %>";
+        return 404 "<%= primary_host %>\n";
+      }
+      if ( $http_x_rko_forwarded = "yes" ) {
+        return 500 "LOOP\n";
       }
 
       proxy_set_header Host $http_x_rko_host;
       proxy_set_header X-Forwarded-Proto $http_x_rko_xfp;
-      proxy_pass http://localhost:<%= ENV["PORT"] %>;
+      proxy_set_header x-rko-forwarded "yes";
+      proxy_pass http://localhost:<%= ENV.fetch("PORT") %>;
     }
   }
 
   server {
-    listen <%= ENV["PORT"] %>;
+    listen <%= ENV.fetch("PORT") %>;
     server_name regional.rubykaigi.org;
 
     set $csp_policy "";
@@ -230,13 +243,13 @@ http {
   }
 
   server {
-    listen <%= ENV["PORT"] %>;
+    listen <%= ENV.fetch("PORT") %>;
     server_name j.rubykaigi.org;
     rewrite ^ http://jrubykaigi.org$request_uri permanent;
   }
 
   server {
-    listen <%= ENV["PORT"] %>;
+    listen <%= ENV.fetch("PORT") %>;
     server_name yami.rubykaigi.org;
 
     location = / {
@@ -249,7 +262,7 @@ http {
   }
 
   server {
-    listen <%= ENV["PORT"] %>;
+    listen <%= ENV.fetch("PORT") %>;
     server_name www.rubykaigi.org;
 
     if ($host ~* www\.(.*)) {
@@ -259,17 +272,17 @@ http {
   }
 
   server {
-    listen <%= ENV["PORT"] %>;
+    listen <%= ENV.fetch("PORT") %>;
     server_name ~^200[6-8]\.rubykaigi\.org$;
 
     if ($host ~* ^(\d+)\.(.*)) {
       set $rubykaigi_year $1;
-      return 301 http://2009-2011.rubykaigi.org/$rubykaigi_year/$request_uri;
+      return 301 http://2009-2011.rubykaigi.org/$rubykaigi_year$request_uri;
     }
   }
 
   server {
-    listen <%= ENV["PORT"] %>;
+    listen <%= ENV.fetch("PORT") %>;
     server_name rubykaigi.org;
 
     set $csp_policy "";
@@ -323,7 +336,7 @@ http {
   }
 
   server {
-    listen <%= ENV["PORT"] %>;
+    listen <%= ENV.fetch("PORT") %>;
     server_name sapporo.rubykaigi.org;
     location / {
       proxy_set_header Host $host;
@@ -332,7 +345,7 @@ http {
   }
 
   server {
-    listen <%= ENV["PORT"] %>;
+    listen <%= ENV.fetch("PORT") %>;
     server_name cfp.rubykaigi.org;
     location / {
       return 302 https://rubykaigi-cfp.herokuapp.com;
@@ -340,7 +353,7 @@ http {
   }
 
   server {
-    listen <%= ENV["PORT"] %>;
+    listen <%= ENV.fetch("PORT") %>;
     server_name sponsorship.rubykaigi.org;
     location / {
       return 302 https://sponsorships.rubykaigi.org;

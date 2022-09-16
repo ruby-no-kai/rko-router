@@ -2,7 +2,7 @@ require_relative "./spec_helper"
 
 describe "http://regional.rubykaigi.org" do
   %w(
-  /
+    /
     /oedo03/
     /osaka01/
     /kansai2017/
@@ -26,6 +26,9 @@ describe "http://regional.rubykaigi.org" do
     describe(path) do
       let(:res) { http_get("http://regional.rubykaigi.org#{path}") }
       it "returns ok" do
+        pending 'kanrk05.herokuapp.com is down' if path == '/kansai05/'
+        pending 'http://rubykaigi-hamamatsu.s3-website-ap-northeast-1.amazonaws.com/hamamatsu01/ returns C-T:application/javascript' if path == '/hamamatsu01/'
+
         expect(res.code).to eq("200")
         expect(res["content-type"]).to include("text/html")
       end
