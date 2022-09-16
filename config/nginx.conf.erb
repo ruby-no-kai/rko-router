@@ -85,9 +85,13 @@ http {
       return 200 "<img src='http://img.sorah.jp/s/2018-06-07_1506_89adg.png'>";
     }
 
+    location = /healthz {
+      return 200 "<%= primary_host %>\n";
+    }
+
     location / {
       if ( $http_x_rko_host = "" ) {
-        return 404 "<%= primary_host %>";
+        return 404 "<%= primary_host %>\n";
       }
 
       proxy_set_header Host $http_x_rko_host;
