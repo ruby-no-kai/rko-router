@@ -19,6 +19,22 @@ describe "http://rubykaigi.org" do
     end
   end
 
+  describe "(http) /2021" do
+    let(:res) { http_get("http://rubykaigi.org/2021") }
+    it "redirects to 2021-takeout" do
+      expect(res.code).to eq("302")
+      expect(res["location"]).to eq("https://rubykaigi.org/2021-takeout/")
+    end
+  end
+
+  describe "(https) /2021" do
+    let(:res) { http_get("https://rubykaigi.org/2021") }
+    it "redirects to 2021-takeout" do
+      expect(res.code).to eq("302")
+      expect(res["location"]).to eq("https://rubykaigi.org/2021-takeout/")
+    end
+  end
+
   describe "/2013/" do
     let(:res) { http_get("https://rubykaigi.org/2013/") }
     it "should render the top page" do
