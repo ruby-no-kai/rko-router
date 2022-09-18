@@ -44,13 +44,23 @@ data "aws_iam_policy_document" "rko-router-deploy-apprunner" {
     ]
     resources = [aws_iam_role.rko-router-access.arn]
   }
+
   statement {
     effect = "Allow"
     actions = [
+      "apprunner:DescribeService",
       "apprunner:UpdateService",
     ]
     resources = [
       aws_apprunner_service.rko-router.arn,
     ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "apprunner:ListServices",
+    ]
+    resources = ["*"]
   }
 }
