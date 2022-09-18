@@ -1,14 +1,14 @@
-resource "aws_iam_role" "rko-router-ci" {
-  name               = "GhaRkoRouter"
+resource "aws_iam_role" "rko-router-deploy" {
+  name               = "GhaRkoRouterDeploy"
   description        = "rko-router tf/iam.tf"
-  assume_role_policy = data.aws_iam_policy_document.rko-router-ci-trust.json
+  assume_role_policy = data.aws_iam_policy_document.rko-router-deploy-trust.json
 }
 
 data "aws_iam_openid_connect_provider" "github-actions" {
   url = "https://token.actions.githubusercontent.com"
 }
 
-data "aws_iam_policy_document" "rko-router-ci-trust" {
+data "aws_iam_policy_document" "rko-router-deploy-trust" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
     effect  = "Allow"
@@ -20,23 +20,23 @@ data "aws_iam_policy_document" "rko-router-ci-trust" {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
       values = [
-        "repo:ruby-no-kai/rko-router:ref:refs/heads/master",
+        "repo:ruby-no-kai/rko-router:environment:apprunner-prod"
       ]
     }
   }
 }
 
-resource "aws_iam_role_policy" "rko-router-ci-ecr" {
-  role   = aws_iam_role.rko-router-access.name
+resource "aws_iam_role_policy" "rko-router-deploy-ecr" {
+  role   = aws_iam_role.rko-router-deploy.name
   policy = data.aws_iam_policy_document.rko-router-access.json
 }
 
-resource "aws_iam_role_policy" "rko-router-ci-apprunner" {
-  role   = aws_iam_role.rko-router-access.name
-  policy = data.aws_iam_policy_document.rko-router-ci-apprunner.json
+resource "aws_iam_role_policy" "rko-router-deploy-apprunner" {
+  role   = aws_iam_role.rko-router-deploy.name
+  policy = data.aws_iam_policy_document.rko-router-deploy-apprunner.json
 }
 
-data "aws_iam_policy_document" "rko-router-ci-apprunner" {
+data "aws_iam_policy_document" "rko-router-deploy-apprunner" {
   statement {
     effect = "Allow"
     actions = [
