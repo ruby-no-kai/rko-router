@@ -93,6 +93,9 @@ http {
       if ( $http_x_rko_host = "" ) {
         return 404 "<%= primary_host %>\n";
       }
+      if ( $http_x_rko_host = "<%= primary_host %>" ) {
+        return 404 "<%= primary_host %>\n";
+      }
       if ( $http_x_rko_forwarded = "yes" ) {
         return 500 "LOOP\n";
       }
