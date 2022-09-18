@@ -1,0 +1,2 @@
+config/*.conf linguist-language=nginx
+config/*.erb linguist-language=nginx
