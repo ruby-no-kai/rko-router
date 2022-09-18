@@ -33,6 +33,10 @@ resource "aws_apprunner_service" "rko-router" {
     Name    = "rko-router"
     Project = "rko-router"
   }
+
+  lifecycle {
+    ignore_changes = [source_configuration[0].image_repository[0].image_identifier]
+  }
 }
 
 resource "aws_iam_role" "rko-router-access" {
