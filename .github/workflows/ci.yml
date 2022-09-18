@@ -58,6 +58,9 @@ jobs:
           tags: "${{ steps.login-ecr.outputs.registry }}/rko-router:${{ github.sha }},${{ steps.login-ecr.outputs.registry }}/rko-router:latest"
   deploy:
     name: deploy
+    environment:
+      name: apprunner-prod
+      url: https://rko-router.rubykaigi.org
     permissions:
       contents: read
       id-token: write
