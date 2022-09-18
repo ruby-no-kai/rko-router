@@ -3,19 +3,19 @@ require_relative "./spec_helper"
 describe "http://rubykaigi.org" do
   let(:latest_year) { "2022" }
 
-  describe "/" do
-    let(:res) { http_get("http://rubykaigi.org/") }
-    it "redirects to /?locale=en" do
+  describe "(https) /" do
+    let(:res) { http_get("https://rubykaigi.org/") }
+    it "redirects to latest_year" do
       expect(res.code).to eq("302")
-      expect(res["location"]).to eq("https://rubykaigi.org/#{latest_year}")
+      expect(res["location"]).to eq("https://rubykaigi.org/#{latest_year}/")
     end
   end
 
-  describe "/?locale=en" do
-    let(:res) { http_get("http://rubykaigi.org/?locale=en") }
-    it "redirects to the latest" do
+  describe "(http) /" do
+    let(:res) { http_get("http://rubykaigi.org/") }
+    it "redirects to latest_year" do
       expect(res.code).to eq("302")
-      expect(res["location"]).to eq("https://rubykaigi.org/#{latest_year}")
+      expect(res["location"]).to eq("https://rubykaigi.org/#{latest_year}/")
     end
   end
 
