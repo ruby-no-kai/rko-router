@@ -19,15 +19,14 @@ describe "http://rubykaigi.org" do
     end
   end
 
-  describe "/?locale=ja" do
-    let(:res) { http_get("http://rubykaigi.org/?locale=ja") }
-    it "redirects to the latest" do
-      expect(res.code).to eq("302")
-      expect(res["location"]).to eq("https://rubykaigi.org/#{latest_year}")
-    end
-  end
-
   [*(2006..2009), *(2014..2017)].each do |year|
+    describe "/#{year}/" do
+      let(:res) { http_get("https://rubykaigi.org/#{year}/") }
+      it "should be available" do
+        expect(res.code).to eq("200")
+      end
+    end
+
     describe "/#{year}" do
       let(:res) { http_get("https://rubykaigi.org/#{year}") }
       it "should return 301 for trailing slash" do
