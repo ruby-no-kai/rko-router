@@ -17,6 +17,17 @@ Due to the quota of custom domains per App Runner service, the first hop on rko-
 
 These custom headers are assigned at CloudFront function (viewer-request) and implementation is at [./tf/cf_functions/src/viewreq.ts](./tf/cf_functions/src/viewreq.ts).
 
+## Run locally
+
+```
+docker build -t rko-router:latest .
+docker run --rm --name rko-router --publish 127.0.0.1::8080 rko-router:latest
+```
+
+```
+curl -H Host:rubykaigi.org http://localhost:$(docker port rko-router 8080)/
+```
+
 ## Test
 
 Test against production:
