@@ -24,6 +24,7 @@ jobs:
           aws-region: "ap-northeast-1"
           role-skip-session-tagging: true
           role-to-assume: "arn:aws:iam::005216166247:role/GhaDockerPush"
+          mask-aws-account-id: 'false' # only string works
       - id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
       - name: 'Build Docker image'
@@ -73,6 +74,7 @@ jobs:
           aws-region: "ap-northeast-1"
           role-skip-session-tagging: true
           role-to-assume: "arn:aws:iam::005216166247:role/GhaRkoRouter"
+          mask-aws-account-id: 'false' # only string works
       - uses: awslabs/amazon-app-runner-deploy@2b1ceb5d474d3c882bef811b4a12745b486d8cd5
         with:
           service: "rko-router"
