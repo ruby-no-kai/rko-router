@@ -1,4 +1,10 @@
 provider "aws" {
+  region              = "us-west-2"
+  allowed_account_ids = ["005216166247"]
+}
+
+provider "aws" {
+  alias               = "apne1"
   region              = "ap-northeast-1"
   allowed_account_ids = ["005216166247"]
 }
