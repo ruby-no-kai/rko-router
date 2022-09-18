@@ -131,7 +131,7 @@ describe "http://rubykaigi.org" do
     end
 
     context "http" do
-      let(:res) { http_get("https://rubykaigi.org/2019/", proto: 'http') }
+      let(:res) { http_get("http://rubykaigi.org/2019/") }
       it "should force https" do
         expect(res.code).to eq("301")
         expect(res["location"]).to eq("https://rubykaigi.org/2019/")
