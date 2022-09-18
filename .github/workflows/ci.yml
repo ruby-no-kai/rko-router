@@ -11,6 +11,8 @@ jobs:
       contents: read
       id-token: write
     runs-on: ubuntu-latest
+    outputs:
+      image-tag: "${{ steps.login-ecr.outputs.registry }}/rko-router:${{ github.sha }}"
     steps:
       - uses: actions/checkout@v3
       - uses: ruby/setup-ruby@v1
@@ -54,3 +56,25 @@ jobs:
           context: '.'
           push: true
           tags: "${{ steps.login-ecr.outputs.registry }}/rko-router:${{ github.sha }},${{ steps.login-ecr.outputs.registry }}/rko-router:latest"
+  deploy:
+    name: deploy
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    needs:
+      - ci
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: "ap-northeast-1"
+          role-skip-session-tagging: true
+          role-to-assume: "arn:aws:iam::005216166247:role/GhaRkoRouter"
+      - uses: awslabs/amazon-app-runner-deploy@2b1ceb5d474d3c882bef811b4a12745b486d8cd5
+        with:
+          service: "rko-router"
+          image: "${{needs.ci.outputs.image-tag}}"
+          access-role-arn:  "arn:aws:iam::005216166247:role/AppraRkoRouter"
+          wait-for-service-stability: true
+          port: "8080"
+
