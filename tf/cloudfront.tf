@@ -101,7 +101,7 @@ resource "aws_cloudfront_cache_policy" "rko-router-default" {
     headers_config {
       header_behavior = "whitelist"
       headers {
-        items = ["x-rko-host", "x-rko-xfp"]
+        items = ["x-rko-host", "x-rko-xfp", "cloudfront-forwarded-proto"]
       }
     }
     query_strings_config {
