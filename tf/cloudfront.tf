@@ -41,7 +41,7 @@ resource "aws_cloudfront_distribution" "rko-router" {
 
   origin {
     origin_id   = "rko-router-apprunner"
-    domain_name = replace(aws_apprunner_service.rko-router-apne1.service_url, "https://", "")
+    domain_name = replace(aws_apprunner_service.rko-router.service_url, "https://", "")
 
     custom_origin_config {
       http_port                = 80
@@ -54,7 +54,7 @@ resource "aws_cloudfront_distribution" "rko-router" {
 
     origin_shield {
       enabled              = true
-      origin_shield_region = "ap-northeast-1"
+      origin_shield_region = "us-west-2"
     }
   }
 
