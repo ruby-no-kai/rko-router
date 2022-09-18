@@ -100,8 +100,13 @@ http {
         return 500 "LOOP\n";
       }
 
+      set $x_rko_xfp "$http_x_rko_xfp";
+      if ( $x_rko_xfp = "" ) {
+        set $x_rko_xfp "$http_x_forwarded_proto";
+      }
+
       proxy_set_header Host $http_x_rko_host;
-      proxy_set_header X-Forwarded-Proto $http_x_rko_xfp;
+      proxy_set_header X-Forwarded-Proto $x_rko_xfp;
       proxy_set_header x-rko-forwarded "yes";
       proxy_pass http://localhost:<%= ENV.fetch("PORT") %>;
     }
