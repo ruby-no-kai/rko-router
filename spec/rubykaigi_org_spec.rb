@@ -19,41 +19,6 @@ describe "http://rubykaigi.org" do
     end
   end
 
-  [*(2006..2009), *(2014..2017)].each do |year|
-    describe "/#{year}/" do
-      let(:res) { http_get("https://rubykaigi.org/#{year}/") }
-      it "should be available" do
-        expect(res.code).to eq("200")
-      end
-    end
-
-    describe "/#{year}" do
-      let(:res) { http_get("https://rubykaigi.org/#{year}") }
-      it "should return 301 for trailing slash" do
-        expect(res.code).to eq("301")
-        expect(res['location']).to eq("https://rubykaigi.org/#{year}/")
-      end
-    end
-
-    context "http" do
-      describe "/#{year}" do
-        let(:res) { http_get("http://rubykaigi.org/#{year}") }
-        it "should return 301 for https" do
-          expect(res.code).to eq("301")
-          expect(res['location']).to eq("https://rubykaigi.org/#{year}")
-        end
-      end
-
-      describe "/#{year}/" do
-        let(:res) { http_get("http://rubykaigi.org/#{year}/") }
-        it "should return 301 for https" do
-          expect(res.code).to eq("301")
-          expect(res['location']).to eq("https://rubykaigi.org/#{year}/")
-        end
-      end
-    end
-  end
-
   describe "/2013/" do
     let(:res) { http_get("https://rubykaigi.org/2013/") }
     it "should render the top page" do
@@ -67,14 +32,6 @@ describe "http://rubykaigi.org" do
     it "should render the special 200 (not 404) page" do
       expect(res.code).to eq("200")
       expect(res.body).to include("<title>RubyKaigi 2012: 404 Kaigi Not Found</title>")
-    end
-  end
-
-  describe "/2011" do
-    let(:res) { http_get("https://rubykaigi.org/2011") }
-    it "redirects to /2011/" do
-      expect(res.code).to eq("301")
-      expect(res["location"]).to eq("https://rubykaigi.org/2011/")
     end
   end
 
@@ -102,14 +59,6 @@ describe "http://rubykaigi.org" do
     end
   end
 
-  describe "/2009" do
-    let(:res) { http_get("https://rubykaigi.org/2009") }
-    it "redirects to /2009/" do
-      expect(res.code).to eq("301")
-      expect(res["location"]).to eq("https://rubykaigi.org/2009/")
-    end
-  end
-
   describe "/2009/en/" do
     let(:res) { http_get("https://rubykaigi.org/2009/en/") }
     it "should render the top page" do
@@ -132,19 +81,60 @@ describe "http://rubykaigi.org" do
     end
   end
 
-  describe "/2019/" do
-    context "https" do
-      let(:res) { http_get("https://rubykaigi.org/2019/") }
-      it "should be 200" do
-        expect(res.code).to eq("200")
+  HOSTED_YEARS = [
+    *(2006..2020),
+    '2020-takeout',
+    '2021-takeout',
+    *(2022..2022),
+  ]
+
+  describe "force_https" do
+    HOSTED_YEARS.each do |year|
+      describe "/#{year}" do
+        let(:res) { http_get("http://rubykaigi.org/#{year}/") }
+        it "force https" do
+          expect(res.code).to eq("301")
+          expect(res["location"]).to eq("https://rubykaigi.org/#{year}/")
+        end
+      end
+
+      describe "/#{year}/something" do
+        let(:res) { http_get("http://rubykaigi.org/#{year}/something") }
+        it "force https" do
+          expect(res.code).to eq("301")
+          expect(res["location"]).to eq("https://rubykaigi.org/#{year}/something")
+        end
       end
     end
+  end
 
-    context "http" do
-      let(:res) { http_get("http://rubykaigi.org/2019/") }
-      it "should force https" do
-        expect(res.code).to eq("301")
-        expect(res["location"]).to eq("https://rubykaigi.org/2019/")
+  describe "trailing slash" do
+    HOSTED_YEARS.each do |year|
+      describe "(http) /#{year}" do
+        let(:res) { http_get("http://rubykaigi.org/#{year}") }
+        # this is because trailing slash may be enforced by backend (e.g. github pages) and force_https rewrite rule is prioritized over proxy_pass
+        it "prioritizes force https" do
+          expect(res.code).to eq("301")
+          expect(res["location"]).to eq("https://rubykaigi.org/#{year}")
+        end
+      end
+
+
+      describe "(https) /#{year}" do
+        let(:res) { http_get("https://rubykaigi.org/#{year}") }
+        it "adds trailing slash" do
+          expect(res.code).to eq("301")
+          expect(res["location"]).to eq("https://rubykaigi.org/#{year}/")
+        end
+      end
+    end
+  end
+
+  HOSTED_YEARS.each do |year|
+    describe "/#{year}/" do
+      let(:res) { http_get("https://rubykaigi.org/#{year}/") }
+      it "is available" do
+        expect(res.code).to eq("200")
       end
     end
   end
