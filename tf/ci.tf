@@ -20,7 +20,9 @@ data "aws_iam_policy_document" "rko-router-deploy-trust" {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
       values = [
-        "repo:ruby-no-kai/rko-router:environment:apprunner-prod"
+        "repo:ruby-no-kai/rko-router:environment:apprunner-prod",
+        "repo:ruby-no-kai/rko-router:ref:refs/heads/master",
+        "repo:ruby-no-kai/rko-router:ref:refs/heads/test",
       ]
     }
   }
@@ -28,7 +30,38 @@ data "aws_iam_policy_document" "rko-router-deploy-trust" {
 
 resource "aws_iam_role_policy" "rko-router-deploy-ecr" {
   role   = aws_iam_role.rko-router-deploy.name
-  policy = data.aws_iam_policy_document.rko-router-access.json
+  policy = data.aws_iam_policy_document.rko-router-deploy-ecr.json
+}
+
+data "aws_iam_policy_document" "rko-router-deploy-ecr" {
+  statement {
+    effect    = "Allow"
+    resources = ["*"]
+    actions = [
+      "ecr:GetAuthorizationToken",
+      "sts:GetServiceBearerToken",
+    ]
+  }
+  statement {
+    effect = "Allow"
+    actions = [
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:GetRepositoryPolicy",
+      "ecr:DescribeRepositories",
+      "ecr:ListImages",
+      "ecr:BatchGetImage",
+
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:CompleteLayerUpload",
+      "ecr:InitiateLayerUpload",
+      "ecr:PutImage",
+      "ecr:UploadLayerPart",
+    ]
+    resources = [
+      aws_ecr_repository.rko-router.arn,
+    ]
+  }
+
 }
 
 resource "aws_iam_role_policy" "rko-router-deploy-apprunner" {
@@ -43,6 +76,14 @@ data "aws_iam_policy_document" "rko-router-deploy-apprunner" {
       "iam:PassRole",
     ]
     resources = [aws_iam_role.rko-router-access.arn]
+
+    condition {
+      test     = "StringEquals"
+      variable = "token.actions.githubusercontent.com:sub"
+      values = [
+        "repo:ruby-no-kai/rko-router:environment:apprunner-prod",
+      ]
+    }
   }
 
   statement {
@@ -54,6 +95,14 @@ data "aws_iam_policy_document" "rko-router-deploy-apprunner" {
     resources = [
       aws_apprunner_service.rko-router.arn,
     ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "token.actions.githubusercontent.com:sub"
+      values = [
+        "repo:ruby-no-kai/rko-router:environment:apprunner-prod",
+      ]
+    }
   }
 
   statement {

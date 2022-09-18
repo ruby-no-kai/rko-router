@@ -1,4 +1,5 @@
 resource "aws_cloudfront_distribution" "rko-router" {
+  provider        = aws.use1
   enabled         = true
   is_ipv6_enabled = true
   price_class     = "PriceClass_All"
@@ -53,7 +54,7 @@ resource "aws_cloudfront_distribution" "rko-router" {
 
     origin_shield {
       enabled              = true
-      origin_shield_region = "ap-northeast-1"
+      origin_shield_region = "us-west-2"
     }
   }
 
@@ -86,12 +87,14 @@ resource "aws_cloudfront_distribution" "rko-router" {
 }
 
 data "aws_cloudfront_cache_policy" "Managed-CachingDisabled" {
-  name = "Managed-CachingDisabled"
+  provider = aws.use1
+  name     = "Managed-CachingDisabled"
 }
 
 resource "aws_cloudfront_cache_policy" "rko-router-default" {
-  name    = "rko-router-default"
-  comment = "rko-router-default"
+  provider = aws.use1
+  name     = "rko-router-default"
+  comment  = "rko-router-default"
 
   min_ttl     = 1
   default_ttl = 86400
@@ -125,11 +128,12 @@ resource "null_resource" "tsc" {
 }
 
 resource "aws_cloudfront_function" "rko-router-viewreq" {
-  name    = "rko-router-viewreq"
-  comment = "rko-router viewer-request"
-  runtime = "cloudfront-js-1.0"
-  publish = true
-  code    = file("${path.module}/cf_functions/src/viewreq.js")
+  provider = aws.use1
+  name     = "rko-router-viewreq"
+  comment  = "rko-router viewer-request"
+  runtime  = "cloudfront-js-1.0"
+  publish  = true
+  code     = file("${path.module}/cf_functions/src/viewreq.js")
 
   depends_on = [null_resource.tsc]
 }
