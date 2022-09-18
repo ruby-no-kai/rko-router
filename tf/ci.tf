@@ -59,7 +59,6 @@ data "aws_iam_policy_document" "rko-router-deploy-ecr" {
     ]
     resources = [
       aws_ecr_repository.rko-router.arn,
-      aws_ecr_repository.rko-router-apne1.arn,
     ]
   }
 
@@ -95,7 +94,6 @@ data "aws_iam_policy_document" "rko-router-deploy-apprunner" {
     ]
     resources = [
       aws_apprunner_service.rko-router.arn,
-      aws_apprunner_service.rko-router-apne1.arn,
     ]
 
     condition {

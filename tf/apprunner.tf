@@ -82,7 +82,6 @@ data "aws_iam_policy_document" "rko-router-access" {
     ]
     resources = [
       aws_ecr_repository.rko-router.arn,
-      aws_ecr_repository.rko-router-apne1.arn,
     ]
   }
 }
