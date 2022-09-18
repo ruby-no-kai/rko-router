@@ -2,6 +2,8 @@
 
 nginx container deployed on AWS App Runner and served through CloudFront.
 
+Detailed docs for RubyKaigi orgz: https://rubykaigi.esa.io/posts/1241
+
 ## Deploy
 
 Deployments are automatically performed on GitHub Actions on `master` branch after CI.
