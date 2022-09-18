@@ -1,2 +1,4 @@
 .terraform/
 .github/
+node_modules/
+/tf/

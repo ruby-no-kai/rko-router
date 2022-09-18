@@ -1,8 +1,10 @@
 # rubykaigi.org router
 
+nginx container deployed on AWS App Runner and served through CloudFront.
+
 ## Deploy
 
-Deployed on AWS App Runner and served through CloudFront. Deployments are automatically performed on GitHub Actions on `master` branch after CI.
+Deployments are automatically performed on GitHub Actions on `master` branch after CI.
 
 - App Runner: [arn:aws:apprunner:ap-northeast-1:005216166247:service/rko-router/259d1a5f750f4308a6c3ec8caede6d84](https://ap-northeast-1.console.aws.amazon.com/apprunner/home?region=ap-northeast-1#/services/dashboard?service_arn=arn%3Aaws%3Aapprunner%3Aap-northeast-1%3A005216166247%3Aservice%2Frko-router%2F259d1a5f750f4308a6c3ec8caede6d84&active_tab=logs)
 - CloudFront: [arn:aws:cloudfront::005216166247:distribution/E2WEWQCYU12GVD](https://us-east-1.console.aws.amazon.com/cloudfront/v3/home?region=ap-northeast-1#/distributions/E2WEWQCYU12GVD)
@@ -25,7 +27,7 @@ docker run --rm --name rko-router --publish 127.0.0.1::8080 rko-router:latest
 ```
 
 ```
-curl -H Host:rubykaigi.org http://localhost:$(docker port rko-router 8080)/
+curl -H Host:rubykaigi.org http://$(docker port rko-router 8080)/
 ```
 
 ## Test
