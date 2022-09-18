@@ -97,7 +97,7 @@ http {
         return 404 "<%= primary_host %>\n";
       }
       if ( $http_x_rko_forwarded = "yes" ) {
-        return 500 "LOOP\n";
+        return 404 "<%= primary_host %> (loop)\n";
       }
 
       set $x_rko_xfp "$http_x_rko_xfp";
