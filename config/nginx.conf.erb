@@ -104,6 +104,9 @@ http {
       if ( $x_rko_xfp = "" ) {
         set $x_rko_xfp "$http_x_forwarded_proto";
       }
+      if ( $x_rko_xfp = "" ) {
+        set $x_rko_xfp "http";
+      }
 
       proxy_set_header Host $http_x_rko_host;
       proxy_set_header X-Forwarded-Proto $x_rko_xfp;
