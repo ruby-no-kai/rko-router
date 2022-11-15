@@ -1,6 +1,14 @@
 require_relative "./spec_helper"
 
 describe "http://regional.rubykaigi.org" do
+  describe "(http) /" do
+    let(:res) { http_get("http://regional.rubykaigi.org/") }
+    it "redirects to https" do
+      expect(res.code).to eq("302")
+      expect(res["location"]).to eq("https://regional.rubykaigi.org/")
+    end
+  end
+
   %w(
     /
     /oedo03/
