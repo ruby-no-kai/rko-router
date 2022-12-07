@@ -248,7 +248,7 @@ http {
 
     # regional.rubykaigi.org
     location / {
-      proxy_set_header Host regional-gh.rubykaigi.org;
+      include force_https.conf;
       proxy_pass https://regional-gh.rubykaigi.org;
     }
   }

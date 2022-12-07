@@ -1,6 +1,14 @@
 require_relative "./spec_helper"
 
 describe "http://regional.rubykaigi.org" do
+  describe "(http) /" do
+    let(:res) { http_get("http://regional.rubykaigi.org/") }
+    it "redirects to https" do
+      expect(res.code).to eq("301")
+      expect(res["location"]).to eq("https://regional.rubykaigi.org/")
+    end
+  end
+
   %w(
     /
     /oedo03/
@@ -24,7 +32,7 @@ describe "http://regional.rubykaigi.org" do
     /kwsk01/
   ).each do |path|
     describe(path) do
-      let(:res) { http_get("http://regional.rubykaigi.org#{path}") }
+      let(:res) { http_get("https://regional.rubykaigi.org#{path}") }
       it "returns ok" do
         pending 'kanrk05.herokuapp.com is down' if path == '/kansai05/'
         pending 'http://rubykaigi-hamamatsu.s3-website-ap-northeast-1.amazonaws.com/hamamatsu01/ returns C-T:application/javascript' if path == '/hamamatsu01/'
@@ -43,7 +51,7 @@ describe "http://regional.rubykaigi.org" do
     /okrk01/ ruby.okinawa
   ).each_slice(2) do |path, host|
     describe(path) do
-      let(:res) { http_get("http://regional.rubykaigi.org#{path}") }
+      let(:res) { http_get("https://regional.rubykaigi.org#{path}") }
       it "redirects to matsue.rubyist.net" do
         expect(res.code.to_i).to be_between(300, 399)
         expect(res["location"]).to include(host)
