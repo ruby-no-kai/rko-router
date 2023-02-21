@@ -30,6 +30,7 @@ docker run --rm --name rko-router --publish 127.0.0.1::8080 rko-router:latest
 
 ```
 curl -H Host:rubykaigi.org http://$(docker port rko-router 8080)/
+TARGET_HOST=http://$(docker port rko-router 8080) bundle exec rspec
 ```
 
 ## Test
