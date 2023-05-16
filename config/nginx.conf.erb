@@ -130,6 +130,10 @@ http {
       return 301 https://magazine.rubyist.net/articles/0039/0039-MetPragdaveAtAsakusarb.html;
     }
 
+    location ~ ^/osaka03(.*) {
+      proxy_pass https://rubykansai.github.io;
+    }
+
     location ~ ^/osaka02(.*) {
       proxy_pass https://rubykansai.github.io;
     }
