@@ -130,7 +130,8 @@ http {
       return 301 https://magazine.rubyist.net/articles/0039/0039-MetPragdaveAtAsakusarb.html;
     }
 
-    location ~ ^/osaka03(.*) {
+    location /osaka03 {
+      include force_https.conf;
       proxy_pass https://rubykansai.github.io;
     }
 
