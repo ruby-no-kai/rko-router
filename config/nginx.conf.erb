@@ -366,6 +366,11 @@ http {
         proxy_pass https://gh-pages.rubykaigi.org;
     }
 
+    location /2024 {
+        include force_https.conf;
+        proxy_pass https://gh-pages.rubykaigi.org;
+    }
+
     # current rubykaigi
     location = / {
         error_page 302 @root_page;
