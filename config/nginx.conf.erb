@@ -244,6 +244,7 @@ http {
     }
 
     location ~ ^/oedo(0[5-8]|10)(.*) {
+      include force_https.conf;
       proxy_pass https://asakusarb.github.io;
     }
 
