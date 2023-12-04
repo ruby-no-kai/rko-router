@@ -116,7 +116,7 @@ describe "http://rubykaigi.org" do
     *(2006..2020),
     '2020-takeout',
     '2021-takeout',
-    *(2022..2022),
+    *(2022..2023),
   ]
 
   describe "force_https" do
