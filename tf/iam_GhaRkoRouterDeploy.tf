@@ -87,6 +87,7 @@ data "aws_iam_policy_document" "rko-router-deploy-apprunner" {
     actions = [
       "apprunner:DescribeService",
       "apprunner:UpdateService",
+      "apprunner:ListOperations"
     ]
     resources = [
       aws_apprunner_service.rko-router.arn,
