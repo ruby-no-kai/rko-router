@@ -17,8 +17,8 @@ resource "aws_apprunner_service" "rko-router" {
 
   # minimum
   instance_configuration {
-    cpu    = "1024"
-    memory = "2048"
+    cpu    = "256"
+    memory = "512"
   }
 
   health_check_configuration {
