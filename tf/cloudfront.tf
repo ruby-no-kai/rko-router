@@ -77,8 +77,6 @@ resource "aws_cloudfront_distribution" "rko-router" {
 
     cache_policy_id = aws_cloudfront_cache_policy.rko-router-default.id
 
-    compress = true
-
     function_association {
       event_type   = "viewer-request"
       function_arn = aws_cloudfront_function.rko-router-viewreq.arn
@@ -101,6 +99,8 @@ resource "aws_cloudfront_cache_policy" "rko-router-default" {
   max_ttl     = 31536000
 
   parameters_in_cache_key_and_forwarded_to_origin {
+    enable_accept_encoding_brotli = true
+    enable_accept_encoding_gzip   = true
     headers_config {
       header_behavior = "whitelist"
       headers {
