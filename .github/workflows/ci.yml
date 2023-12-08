@@ -84,5 +84,7 @@ jobs:
           image: "${{needs.ci.outputs.image-tag}}"
           access-role-arn:  "arn:aws:iam::005216166247:role/AppraRkoRouter"
           wait-for-service-stability: true
+          cpu: '0.25' # vCPU
+          memory: '0.5' # GB
           port: "8080"
 

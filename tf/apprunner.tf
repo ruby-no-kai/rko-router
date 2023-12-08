@@ -15,7 +15,7 @@ resource "aws_apprunner_service" "rko-router" {
     auto_deployments_enabled = false
   }
 
-  # minimum
+  # Have to update ci.yml
   instance_configuration {
     cpu    = "256"
     memory = "512"
