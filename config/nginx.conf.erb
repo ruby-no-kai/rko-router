@@ -326,6 +326,7 @@ http {
     location ~ ^/200[6-9] {
         include force_https.conf;
         proxy_hide_header Cache-Control;
+        proxy_hide_header Expires;
         add_header Cache-Control "public, max-age=604800, s-maxage=31536000";
         proxy_pass https://2009-2011.rubykaigi.org;
     }
@@ -333,6 +334,7 @@ http {
     location ~ ^/201[0-9](.*) {
         include force_https.conf;
         proxy_hide_header Cache-Control;
+        proxy_hide_header Expires;
         add_header Cache-Control "public, max-age=604800, s-maxage=31536000";
         proxy_pass https://2009-2011.rubykaigi.org;
     }
@@ -340,6 +342,7 @@ http {
     location /2020 {
         include force_https.conf;
         proxy_hide_header Cache-Control;
+        proxy_hide_header Expires;
         add_header Cache-Control "public, max-age=604800, s-maxage=31536000";
         proxy_pass https://2009-2011.rubykaigi.org;
     }
@@ -347,6 +350,7 @@ http {
     location /2020-takeout {
         include force_https.conf;
         proxy_hide_header Cache-Control;
+        proxy_hide_header Expires;
         add_header Cache-Control "public, max-age=604800, s-maxage=31536000";
         proxy_pass https://2009-2011.rubykaigi.org;
     }
@@ -359,12 +363,14 @@ http {
     location /2021-takeout {
         include force_https.conf;
         proxy_hide_header Cache-Control;
+        proxy_hide_header Expires;
         add_header Cache-Control "public, max-age=604800, s-maxage=31536000";
         proxy_pass https://2009-2011.rubykaigi.org;
     }
 
     location ~ ^/\.2007(.*) {
         proxy_hide_header Cache-Control;
+        proxy_hide_header Expires;
         add_header Cache-Control "public, max-age=604800, s-maxage=31536000";
         proxy_pass https://2009-2011.rubykaigi.org;
     }
@@ -372,6 +378,7 @@ http {
     location ~ ^/202[2-3] {
         include force_https.conf;
         proxy_hide_header Cache-Control;
+        proxy_hide_header Expires;
         add_header Cache-Control "public, max-age=604800, s-maxage=31536000";
         proxy_pass https://2009-2011.rubykaigi.org;
     }
@@ -379,6 +386,7 @@ http {
     location /2024 {
         include force_https.conf;
         proxy_hide_header Cache-Control;
+        proxy_hide_header Expires;
         add_header Cache-Control "$implied_cache_control";
         proxy_pass https://gh-pages.rubykaigi.org;
     }
