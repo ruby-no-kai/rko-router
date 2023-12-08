@@ -36,6 +36,13 @@ http {
       "application/json" 0;
       "application/csp-report" 0;
   }
+  map $request_uri $request_uri_path {
+    "~^(?P<path>[^?]*)(\?.*)?$"  $path;
+  }
+  map $request_uri_path $implied_cache_control {
+    "~\.(?:png|jpg|svg|css|js|js\.map)$"  "public, max-age=31536000";
+    default "public, max-age=0, s-maxage=31536000";
+  }
 
   access_log <%= platform == 'heroku' ? 'logs/nginx/access.log' : '/dev/stdout' %> l2met;
   error_log <%= platform == 'heroku' ? 'logs/nginx/access.log' : '/dev/stderr' %>;
@@ -371,6 +378,8 @@ http {
 
     location /2024 {
         include force_https.conf;
+        proxy_hide_header Cache-Control;
+        add_header Cache-Control "$implied_cache_control";
         proxy_pass https://gh-pages.rubykaigi.org;
     }
 
