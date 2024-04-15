@@ -309,7 +309,7 @@ http {
 
     if ($host ~* ^(\d+)\.(.*)) {
       set $rubykaigi_year $1;
-      return 301 http://rubykaigi.org/$rubykaigi_year$request_uri;
+      return 301 https://rubykaigi.org/$rubykaigi_year$request_uri;
     }
   }
 
