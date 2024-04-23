@@ -19,6 +19,22 @@ describe "http://rubykaigi.org" do
     end
   end
 
+  describe "(https) /go/policies" do
+    let(:res) { http_get("https://rubykaigi.org/go/policies") }
+    it "redirects to latest_year" do
+      expect(res.code).to eq("302")
+      expect(res["location"]).to eq("https://rubykaigi.org/#{latest_year}/policies")
+    end
+  end
+
+  describe "(http) /go/policies" do
+    let(:res) { http_get("http://rubykaigi.org/go/policies") }
+    it "redirects to latest_year" do
+      expect(res.code).to eq("302")
+      expect(res["location"]).to eq("https://rubykaigi.org/#{latest_year}/policies")
+    end
+  end
+
   describe "(https) /2024/" do
     let(:res) { http_get("https://rubykaigi.org/2024/") }
     it "should render the top page" do
