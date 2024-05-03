@@ -401,9 +401,39 @@ http {
         error_page 302 @root_page;
         return 302 https://rubykaigi.org/<%= current_year %>/;
     }
+
     location = /go/policies {
         error_page 302 @root_page;
         return 302 https://rubykaigi.org/<%= current_year %>/policies;
+    }
+    location = /go/prospectus-ja {
+        return 302 https://rubykaigi-public.s3.dualstack.ap-northeast-1.amazonaws.com/2024/rubykaigi2024-sponsorship-prospectus-ja.pdf;
+    }
+    location = /go/prospectus-en {
+        return 302 https://rubykaigi-public.s3.dualstack.ap-northeast-1.amazonaws.com/2024/rubykaigi2024-sponsorship-prospectus-en.pdf;
+    }
+    location = /go/discord {
+        return 302 https://discord.gg/AjSCZzc6YG;
+    }
+
+    # rubykaigi internals
+    location = /go/program {
+        return 302 https://rubykaigi.esa.io/posts/1380;
+    }
+    location = /go/team {
+        return 302 https://rubykaigi.esa.io/posts/1348;
+    }
+    location = /go/expense {
+        return 302 https://rubykaigi.esa.io/posts/1319;
+    }
+    location = /go/payment {
+        return 302 https://rubykaigi.esa.io/posts/1393;
+    }
+    location = /go/drive {
+        return 302 https://drive.google.com/drive/folders/1aCEqXQTzJCX3Py79ut6Ijbr5uQaDcPAT?usp=drive_link;
+    }
+    location = /go/kanban {
+        return 302 https://github.com/orgs/ruby-no-kai/projects/5;
     }
 
     location @root_page {
