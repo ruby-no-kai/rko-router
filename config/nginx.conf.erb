@@ -396,6 +396,15 @@ http {
         proxy_pass https://gh-pages.rubykaigi.org;
     }
 
+    location /2025 {
+        include force_https.conf;
+        proxy_hide_header Cache-Control;
+        proxy_hide_header Expires;
+        add_header Cache-Control "public, max-age=0, s-maxage=0";
+        proxy_pass https://gh-pages.rubykaigi.org;
+    }
+
+
     # current rubykaigi
     location = / {
         error_page 302 @root_page;
