@@ -28,6 +28,7 @@ describe "http://regional.rubykaigi.org" do
     /oedo05/
     /oedo06/
     /oedo10/
+    /tokyo12/
     /tokyo11/
     /tokyu10/
     /kwsk01/

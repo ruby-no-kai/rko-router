@@ -260,8 +260,13 @@ http {
       proxy_pass https://asakusarb.github.io;
     }
 
+    location ~ ^/tokyo12(.*) {
+      include force_https.conf;
+      proxy_pass https://osyoyu.github.io;
+    }
+
     location ~ ^/tokyo11(.*) {
-     proxy_pass https://ko1.github.io;
+      proxy_pass https://ko1.github.io;
     }
 
     location ~ ^/tokyu10(.*) {
