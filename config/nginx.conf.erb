@@ -260,9 +260,10 @@ http {
       proxy_pass https://asakusarb.github.io;
     }
 
-    location ~ ^/tokyo12(.*) {
+    location /tokyo12 {
       include force_https.conf;
-      proxy_pass https://osyoyu.github.io;
+      proxy_pass https://osyoyu.github.io; # requires Host: regional.rubykaigi.org
+      proxy_set_header Host $http_host;
     }
 
     location ~ ^/tokyo11(.*) {
