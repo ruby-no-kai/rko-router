@@ -262,8 +262,7 @@ http {
 
     location /tokyo12 {
       include force_https.conf;
-      proxy_pass https://osyoyu.github.io; # requires Host: regional.rubykaigi.org
-      proxy_set_header Host $http_host;
+      proxy_pass https://osyoyu.github.io;
     }
 
     location ~ ^/tokyo11(.*) {
