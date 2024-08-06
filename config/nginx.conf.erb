@@ -255,7 +255,7 @@ http {
       return 301 http://matsue.rubyist.net/matrk07/;
     }
 
-    location ~ ^/oedo(0[7-8]|10)(.*) {
+    location ~ ^/oedo(08|10)(.*) {
       include force_https.conf;
       proxy_pass https://asakusarb.github.io;
     }
