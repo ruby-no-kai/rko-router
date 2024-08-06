@@ -26,7 +26,6 @@ describe "http://regional.rubykaigi.org" do
     /oedo04/
     /hamamatsu01/
     /oedo05/
-    /oedo06/
     /oedo10/
     /tokyo12/
     /tokyo11/
@@ -38,7 +37,6 @@ describe "http://regional.rubykaigi.org" do
       it "returns ok" do
         pending 'kanrk05.herokuapp.com is down' if path == '/kansai05/'
         pending 'http://rubykaigi-hamamatsu.s3-website-ap-northeast-1.amazonaws.com/hamamatsu01/ returns C-T:application/javascript' if path == '/hamamatsu01/'
-        pending 'asakusa.github.io returns 301 (#110)' if path == '/oedo06/'
         pending 'asakusa.github.io returns 301 (#110)' if path == '/oedo10/'
 
         expect(res.code).to eq("200")
