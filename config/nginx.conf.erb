@@ -155,6 +155,11 @@ http {
       proxy_pass https://rubykansai.github.io;
     }
 
+    location /kansai08 {
+      include force_https.conf;
+      proxy_pass https://rubykansai.github.io;
+    }
+
     location ~ ^/kansai2017(.*) {
       proxy_pass https://rubykansai.github.io;
     }
