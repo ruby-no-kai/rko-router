@@ -2,6 +2,7 @@ resource "aws_cloudfront_distribution" "rko-router" {
   provider        = aws.use1
   enabled         = true
   is_ipv6_enabled = true
+  http_version    = "http2and3"
   price_class     = "PriceClass_All"
   comment         = "rko-router"
 
