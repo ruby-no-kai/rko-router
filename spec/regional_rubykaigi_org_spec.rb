@@ -47,6 +47,23 @@ describe "http://regional.rubykaigi.org" do
   end
 
   %w(
+    tokyo12
+  ).each do |subdir|
+    describe("/#{subdir}") do
+      let(:res) { http_get("https://regional.rubykaigi.org/#{subdir}") }
+      it "may redirect to a path with trailing slash" do
+        case res.code
+        when "200"
+          expect(res["content-type"]).to include("text/html")
+        when /^3/
+          expect(res["location"]).to include("regional.rubykaigi.org/#{subdir}")
+          expect(res["location"]).not_to include("github.io/")
+        end
+      end
+    end
+  end
+
+  %w(
     /matrk08/ matsue.rubyist.net
     /matsue08/ matsue.rubyist.net
     /matrk07/ matsue.rubyist.net
