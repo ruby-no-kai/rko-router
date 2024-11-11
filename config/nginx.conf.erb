@@ -267,7 +267,7 @@ http {
 
     location /tokyo12 {
       include force_https.conf;
-      proxy_redirect https://tokyorubykaigi12.github.io/tokyo12 /tokyo12;
+      proxy_redirect https://tokyorubykaigi12.github.io/tokyo12 https://regional.rubykaigi.org/tokyo12;
       proxy_pass https://tokyorubykaigi12.github.io;
     }
 
