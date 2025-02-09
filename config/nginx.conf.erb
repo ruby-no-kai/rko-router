@@ -464,8 +464,14 @@ http {
     }
 
     # rubykaigi internals
+    location = /go/legal {
+        return 302 https://rubykaigi.esa.io/posts/706;
+    }
     location = /go/program {
         return 302 https://rubykaigi.esa.io/posts/1437;
+    }
+    location = /go/venue {
+        return 302 https://rubykaigi.esa.io/posts/1475;
     }
     location = /go/team {
         return 302 https://rubykaigi.esa.io/posts/1430;
