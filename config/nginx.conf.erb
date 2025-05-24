@@ -310,6 +310,12 @@ http {
       proxy_pass https://kawasakirb.github.io;
     }
 
+    location /nagara01 {
+      include force_https.conf;
+      proxy_redirect https://corocn.github.io/nagara01 $map_request_proto://$http_host/nagara01;
+      proxy_pass https://corocn.github.io;
+    }
+
     # regional.rubykaigi.org
     location / {
       include force_https.conf;
