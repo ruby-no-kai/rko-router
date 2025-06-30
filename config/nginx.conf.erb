@@ -316,6 +316,12 @@ http {
       proxy_pass https://corocn.github.io;
     }
 
+    location /hokuriku01 {
+      include force_https.conf;
+      proxy_redirect https://hokurikurb.github.io/hokuriku01 $map_request_proto://$http_host/hokuriku01;
+      proxy_pass https://hokurikurb.github.io;
+    }
+
     # regional.rubykaigi.org
     location / {
       include force_https.conf;
