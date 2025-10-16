@@ -2,3 +2,5 @@
 node_modules/
 tf/cf_functions/src/*.js
 tf/cf_functions/src/*.js.map
+vendor/bundle/
+.bundle/

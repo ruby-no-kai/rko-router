@@ -35,6 +35,22 @@ describe "http://rubykaigi.org" do
     end
   end
 
+  describe "(https) /go/drive" do
+    let(:res) { http_get("https://rubykaigi.org/go/drive") }
+    it "redirects to Google Drive folder" do
+      expect(res.code).to eq("302")
+      expect(res["location"]).to eq("https://drive.google.com/drive/folders/19x59Y336dQncEi5Au4YY2AiFPXWjak1x?usp=drive_link")
+    end
+  end
+
+  describe "(http) /go/drive" do
+    let(:res) { http_get("http://rubykaigi.org/go/drive") }
+    it "redirects to Google Drive folder" do
+      expect(res.code).to eq("302")
+      expect(res["location"]).to eq("https://drive.google.com/drive/folders/19x59Y336dQncEi5Au4YY2AiFPXWjak1x?usp=drive_link")
+    end
+  end
+
   describe "(https) /2024/" do
     let(:res) { http_get("https://rubykaigi.org/2024/") }
     it "should render the top page" do
