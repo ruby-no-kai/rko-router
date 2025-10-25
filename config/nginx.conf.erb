@@ -213,6 +213,12 @@ http {
       proxy_pass https://okinawarb.github.io;
     }
 
+    location /sekigahara01 {
+      include force_https.conf;
+      proxy_redirect https://sekigahararubykaigi.github.io/sekigahara01 $map_request_proto://$http_host/sekigahara01;
+      proxy_pass https://sekigahararubykaigi.github.io;
+    }
+
     #
     # shibuya01, y6y
     #
