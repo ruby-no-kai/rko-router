@@ -1,5 +1,10 @@
 FROM public.ecr.aws/nginx/nginx:1.29
 
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+     apt-get update \
+  && apt-get install -y --no-install-recommends ruby
+
 COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.9.1 /lambda-adapter /opt/extensions/lambda-adapter
 
 RUN apt-get update \
