@@ -192,9 +192,15 @@ http {
         set $x_rko_xfp "http";
       }
 
+      set $x_request_id "$http_x_request_id";
+      if ( $http_x_request_id = "" ) {
+        set $x_request_id "$http_x_amz_cf_id";
+      }
+
       proxy_set_header Host $http_x_rko_host;
       proxy_set_header X-Forwarded-Proto $x_rko_xfp;
       proxy_set_header x-rko-forwarded "yes";
+      proxy_set_header x-request-id "$x_request_id";
       proxy_pass http://localhost:<%= ENV.fetch("PORT") %>;
     }
   }
