@@ -59,22 +59,46 @@ resource "aws_cloudfront_distribution" "rko-router" {
     }
   }
 
+  origin {
+    origin_id   = "rko-router-lambda"
+    domain_name = replace(aws_lambda_function_url.rko-router.function_url, "/^https:\\/+|\\/$/", "")
+
+    custom_origin_config {
+      http_port                = 80
+      https_port               = 443
+      origin_protocol_policy   = "https-only"
+      origin_ssl_protocols     = ["TLSv1.2"]
+      origin_keepalive_timeout = 30
+      origin_read_timeout      = 35
+    }
+
+    origin_shield {
+      enabled              = true
+      origin_shield_region = "us-west-2"
+    }
+  }
+
   ordered_cache_behavior {
     path_pattern = "/_csp"
 
     allowed_methods        = ["GET", "HEAD", "OPTIONS", "POST", "PUT", "PATCH", "DELETE"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id       = "rko-router-apprunner"
+    target_origin_id       = "rko-router-lambda"
     viewer_protocol_policy = "https-only"
 
     cache_policy_id            = data.aws_cloudfront_cache_policy.Managed-CachingDisabled.id
     response_headers_policy_id = aws_cloudfront_response_headers_policy.rko-router.id
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.rko-router-viewreq.arn
+    }
   }
 
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id       = "rko-router-apprunner"
+    target_origin_id       = "rko-router-lambda"
     viewer_protocol_policy = "allow-all"
 
     cache_policy_id            = aws_cloudfront_cache_policy.rko-router-default.id
