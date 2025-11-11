@@ -67,7 +67,8 @@ resource "aws_cloudfront_distribution" "rko-router" {
     target_origin_id       = "rko-router-apprunner"
     viewer_protocol_policy = "https-only"
 
-    cache_policy_id = data.aws_cloudfront_cache_policy.Managed-CachingDisabled.id
+    cache_policy_id            = data.aws_cloudfront_cache_policy.Managed-CachingDisabled.id
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.rko-router.id
   }
 
   default_cache_behavior {
@@ -76,7 +77,8 @@ resource "aws_cloudfront_distribution" "rko-router" {
     target_origin_id       = "rko-router-apprunner"
     viewer_protocol_policy = "allow-all"
 
-    cache_policy_id = aws_cloudfront_cache_policy.rko-router-default.id
+    cache_policy_id            = aws_cloudfront_cache_policy.rko-router-default.id
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.rko-router.id
 
     function_association {
       event_type   = "viewer-request"
@@ -114,6 +116,16 @@ resource "aws_cloudfront_cache_policy" "rko-router-default" {
     cookies_config {
       cookie_behavior = "none"
     }
+  }
+}
+
+resource "aws_cloudfront_response_headers_policy" "rko-router" {
+  name    = "rko-router"
+  comment = "rko-router"
+
+  server_timing_headers_config {
+    enabled       = true
+    sampling_rate = 100
   }
 }
 
