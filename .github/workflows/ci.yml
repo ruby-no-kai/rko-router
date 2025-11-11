@@ -92,7 +92,7 @@ jobs:
 
   deploy-lambda:
     name: deploy-lambda
-    if: "github.ref == 'refs/heads/test'"
+    if: "github.ref == 'refs/heads/master'"
     environment:
       name: lambda-prod
       url: https://rko-router.rubykaigi.org
