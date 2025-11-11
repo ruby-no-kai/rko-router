@@ -214,8 +214,8 @@ http {
     set $csp_policy "";
     set $csp_policy_report "";
     if ($http_x_forwarded_proto = "https") {
-      set $csp_policy "upgrade-insecure-requests; frame-ancestors 'none'; script-src 'unsafe-inline' 'unsafe-eval'; style-src 'unsafe-inline'; default-src https:";
-      set $csp_policy_report "default-src https:; script-src 'unsafe-inline'; report-uri https://<%= primary_host %>/_csp";
+      set $csp_policy "upgrade-insecure-requests; frame-ancestors 'none'; script-src https: 'unsafe-inline' 'unsafe-eval'; style-src https: 'unsafe-inline'; default-src https:";
+      set $csp_policy_report "default-src https:; script-src https: 'unsafe-inline'; report-uri https://<%= primary_host %>/_csp";
     }
     add_header X-Content-Type-Options "nosniff";
     add_header Content-Security-Policy "$csp_policy";
@@ -503,8 +503,8 @@ http {
     set $csp_policy "";
     set $csp_policy_report "";
     if ($http_x_forwarded_proto = "https") {
-      set $csp_policy "frame-ancestors 'none'; script-src 'unsafe-inline' 'unsafe-eval'; style-src 'unsafe-inline'; default-src https:";
-      set $csp_policy_report "default-src https:; script-src 'unsafe-inline'; report-uri https://<%= primary_host %>/_csp";
+      set $csp_policy "frame-ancestors 'none'; script-src https: 'unsafe-inline' 'unsafe-eval'; style-src https: 'unsafe-inline'; default-src https:";
+      set $csp_policy_report "default-src https:; script-src https: 'unsafe-inline'; report-uri https://<%= primary_host %>/_csp";
     }
     add_header X-Content-Type-Options "nosniff";
     add_header Strict-Transport-Security "max-age=31536000";
@@ -517,7 +517,7 @@ http {
         proxy_hide_header Cache-Control;
         proxy_hide_header Expires;
         # 2015 sites and prior had mixed content issues
-        set $csp_policy "upgrade-insecure-requests; frame-ancestors 'none'; script-src 'unsafe-inline' 'unsafe-eval'; style-src 'unsafe-inline'; default-src https:";
+        set $csp_policy "upgrade-insecure-requests; frame-ancestors 'none'; script-src https: 'unsafe-inline' 'unsafe-eval'; style-src https: 'unsafe-inline'; default-src https:";
         add_header Cache-Control "public, max-age=604800, s-maxage=31536000";
         proxy_pass https://2009-2011.rubykaigi.org;
     }
