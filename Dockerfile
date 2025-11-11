@@ -16,6 +16,7 @@ RUN mv /etc/nginx /etc/nginx.base \
  && rm -v /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh # We don't use conf.d/default.conf
 
 COPY config/nginx.conf.erb /etc/nginx.base/nginx.conf.erb
+COPY config/github_pages.conf /etc/nginx.base/github_pages.conf
 COPY config/force_https.conf /etc/nginx.base/force_https.conf
 
 COPY docker/entrypoint.d/00-rk-tmp-etc-nginx.sh /docker-entrypoint.d/

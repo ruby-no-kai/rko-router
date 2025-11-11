@@ -65,6 +65,11 @@ http {
     default "http";
   }
 
+  map $upstream_http_x_timer $fastly_timer_as_server_timing {
+    "~,VE(?P<upstream_time>[\d\.]+)$" "ghp;desc=\"GitHub Pages\";dur=$1";
+    default "ghp;desc=\"GitHub Pages\"";
+  }
+
   map $status $loggable_error {
     ~^[234]  0;
     default 1;
@@ -210,39 +215,46 @@ http {
 
     location /osaka04 {
       include force_https.conf;
+      include github_pages.conf;
       proxy_redirect https://rubykansai.github.io/osaka04 $map_request_proto://$http_host/osaka04;
       proxy_pass https://rubykansai.github.io;
     }
 
     location /osaka03 {
       include force_https.conf;
+      include github_pages.conf;
       proxy_redirect https://rubykansai.github.io/osaka03 $map_request_proto://$http_host/osaka03;
       proxy_pass https://rubykansai.github.io;
     }
 
     location ~ ^/osaka02(.*) {
+      include github_pages.conf;
       proxy_redirect https://rubykansai.github.io/osaka02 $map_request_proto://$http_host/osaka02;
       proxy_pass https://rubykansai.github.io;
     }
 
     location ~ ^/osaka01(.*) {
+      include github_pages.conf;
       proxy_redirect https://rubykansai.github.io/osaka01 $map_request_proto://$http_host/osaka01;
       proxy_pass https://rubykansai.github.io;
     }
 
     location /kansai09 {
       include force_https.conf;
+      include github_pages.conf;
       proxy_redirect https://rubykansai.github.io/kansai09 $map_request_proto://$http_host/kansai09;
       proxy_pass https://rubykansai.github.io;
     }
 
     location /kansai08 {
       include force_https.conf;
+      include github_pages.conf;
       proxy_redirect https://rubykansai.github.io/kansai08 $map_request_proto://$http_host/kansai08;
       proxy_pass https://rubykansai.github.io;
     }
 
     location ~ ^/kansai2017(.*) {
+      include github_pages.conf;
       proxy_redirect https://rubykansai.github.io/kansai2017 $map_request_proto://$http_host/kansai2017;
       proxy_pass https://rubykansai.github.io;
     }
@@ -251,6 +263,7 @@ http {
     # kansai 06, y10y
     #
     location ~ ^/kansai06(.*) {
+      include github_pages.conf;
       proxy_redirect https://rubykansai.github.io/kansai06 $map_request_proto://$http_host/kansai06;
       proxy_pass https://rubykansai.github.io;
     }
@@ -266,6 +279,7 @@ http {
     # chuork 01, y6y
     #
     location ~ ^/chuork01(.*) {
+      include github_pages.conf;
       proxy_redirect https://chuork.github.io/chuork01 $map_request_proto://$http_host/chuork01;
       proxy_pass https://chuork.github.io;
     }
@@ -274,6 +288,7 @@ http {
     # okrk01, y6y
     #
     location ~ ^/okrk01(.*) {
+      include github_pages.conf;
       proxy_redirect https://ruby.okinawa/okrk01 $map_request_proto://$http_host/okrk01;
       proxy_set_header Host "ruby.okinawa";
       proxy_pass https://okinawarb.github.io;
@@ -281,6 +296,7 @@ http {
 
     location /sekigahara01 {
       include force_https.conf;
+      include github_pages.conf;
       proxy_redirect https://sekigahararubykaigi.github.io/sekigahara01 $map_request_proto://$http_host/sekigahara01;
       proxy_pass https://sekigahararubykaigi.github.io;
     }
@@ -289,6 +305,7 @@ http {
     # shibuya01, y6y
     #
     location ~ ^/shibuya01(.*) {
+      include github_pages.conf;
       proxy_redirect https://shibuyarb.github.io/shibuya01 $map_request_proto://$http_host/shibuya01;
       proxy_pass https://shibuyarb.github.io;
     }
@@ -297,6 +314,7 @@ http {
     # tokyu14, y6y
     #
     location ~ ^/tokyu14(.*) {
+      include github_pages.conf;
       return 301 https://tokyurubykaigi.github.io/tokyu14;
     }
 
@@ -304,6 +322,7 @@ http {
     # tokyu13, y6y
     #
     location ~ ^/tokyu13(.*) {
+      include github_pages.conf;
       proxy_redirect https://tokyurubykaigi.github.io/tokyu13 $map_request_proto://$http_host/tokyu13;
       proxy_pass https://tokyurubykaigi.github.io;
     }
@@ -312,6 +331,7 @@ http {
     # tokyu12, y6y
     #
     location ~ ^/tokyu12(.*) {
+      include github_pages.conf;
       proxy_redirect https://tokyurubykaigi.github.io/tokyu12 $map_request_proto://$http_host/tokyu12;
       proxy_pass https://tokyurubykaigi.github.io;
     }
@@ -320,6 +340,7 @@ http {
     # tokyu11, y6y
     #
     location ~ ^/tokyu11(.*) {
+      include github_pages.conf;
       proxy_redirect https://tokyurubykaigi.github.io/tokyu11 $map_request_proto://$http_host/tokyu11;
       proxy_pass https://tokyurubykaigi.github.io;
     }
@@ -328,6 +349,7 @@ http {
     # tokyu09, y6y
     #
     location ~ ^/tokyu09(.*) {
+      include github_pages.conf;
       proxy_redirect https://tokyurubykaigi.github.io/tokyu09 $map_request_proto://$http_host/tokyu09;
       proxy_pass https://tokyurubykaigi.github.io;
     }
@@ -336,6 +358,7 @@ http {
     # tokyu08, y6y
     #
     location ~ ^/tokyu08(.*) {
+      include github_pages.conf;
       proxy_redirect https://tokyurb.github.io/tokyu08 $map_request_proto://$http_host/tokyu08;
       proxy_pass https://tokyurb.github.io;
     }
@@ -344,12 +367,13 @@ http {
     # kanagawa01, y6y
     #
     location ~ ^/kana01(.*) {
+      include github_pages.conf;
       proxy_redirect https://kawasakirb.github.io/kana01 $map_request_proto://$http_host/kana01;
       proxy_pass https://kawasakirb.github.io;
     }
 
     location ~ ^/hamamatsu01(.*) {
-    proxy_pass http://rubykaigi-hamamatsu.s3-website-ap-northeast-1.amazonaws.com;
+      proxy_pass http://rubykaigi-hamamatsu.s3-website-ap-northeast-1.amazonaws.com;
     }
 
     location ~ ^/(matrk|matsue)08(.*) {
@@ -362,6 +386,7 @@ http {
 
     location ~ ^/oedo10(.*) {
       include force_https.conf;
+      include github_pages.conf;
       proxy_redirect https://asakusa.rubyist.net/oedo10 $map_request_proto://$http_host/oedo10;
       proxy_set_header Host "asakusa.rubyist.net";
       proxy_pass https://asakusarb.github.io;
@@ -369,39 +394,46 @@ http {
 
     location /tokyo12 {
       include force_https.conf;
+      include github_pages.conf;
       proxy_redirect https://tokyorubykaigi12.github.io/tokyo12 $map_request_proto://$http_host/tokyo12;
       proxy_pass https://tokyorubykaigi12.github.io;
     }
 
     location ~ ^/tokyo11(.*) {
+      include github_pages.conf;
       proxy_redirect https://ko1.github.io/tokyo11 $map_request_proto://$http_host/tokyo11;
       proxy_pass https://ko1.github.io;
     }
 
     location ~ ^/tokyu10(.*) {
+      include github_pages.conf;
       proxy_redirect https://tokyurubykaigi.github.io/tokyu10 $map_request_proto://$http_host/tokyu10;
       proxy_pass https://tokyurubykaigi.github.io;
     }
 
     location ~ ^/kwsk01(.*) {
+      include github_pages.conf;
       proxy_redirect https://kawasakirb.github.io/kwsk01 $map_request_proto://$http_host/kwsk01;
       proxy_pass https://kawasakirb.github.io;
     }
 
     location /nagara01 {
       include force_https.conf;
+      include github_pages.conf;
       proxy_redirect https://corocn.github.io/nagara01 $map_request_proto://$http_host/nagara01;
       proxy_pass https://corocn.github.io;
     }
 
     location /nagoya05 {
       include force_https.conf;
+      include github_pages.conf;
       proxy_redirect https://corocn.github.io/nagoya05 $map_request_proto://$http_host/nagoya05;
       proxy_pass https://corocn.github.io;
     }
 
     location /hokuriku01 {
       include force_https.conf;
+      include github_pages.conf;
       proxy_redirect https://hokurikurb.github.io/hokuriku01 $map_request_proto://$http_host/hokuriku01;
       proxy_pass https://hokurikurb.github.io;
     }
@@ -464,6 +496,7 @@ http {
 
     location ~ ^/200[6-9] {
         include force_https.conf;
+        include github_pages.conf;
         proxy_hide_header Cache-Control;
         proxy_hide_header Expires;
         add_header Cache-Control "public, max-age=604800, s-maxage=31536000";
@@ -472,6 +505,7 @@ http {
 
     location ~ ^/201[0-9](.*) {
         include force_https.conf;
+        include github_pages.conf;
         proxy_hide_header Cache-Control;
         proxy_hide_header Expires;
         add_header Cache-Control "public, max-age=604800, s-maxage=31536000";
@@ -480,6 +514,7 @@ http {
 
     location /2020 {
         include force_https.conf;
+        include github_pages.conf;
         proxy_hide_header Cache-Control;
         proxy_hide_header Expires;
         add_header Cache-Control "public, max-age=604800, s-maxage=31536000";
@@ -488,6 +523,7 @@ http {
 
     location /2020-takeout {
         include force_https.conf;
+        include github_pages.conf;
         proxy_hide_header Cache-Control;
         proxy_hide_header Expires;
         add_header Cache-Control "public, max-age=604800, s-maxage=31536000";
@@ -501,6 +537,7 @@ http {
 
     location /2021-takeout {
         include force_https.conf;
+        include github_pages.conf;
         proxy_hide_header Cache-Control;
         proxy_hide_header Expires;
         add_header Cache-Control "public, max-age=604800, s-maxage=31536000";
@@ -508,6 +545,7 @@ http {
     }
 
     location ~ ^/\.2007(.*) {
+        include github_pages.conf;
         proxy_hide_header Cache-Control;
         proxy_hide_header Expires;
         add_header Cache-Control "public, max-age=604800, s-maxage=31536000";
@@ -516,6 +554,7 @@ http {
 
     location ~ ^/202[2-5] {
         include force_https.conf;
+        include github_pages.conf;
         proxy_hide_header Cache-Control;
         proxy_hide_header Expires;
         add_header Cache-Control "public, max-age=604800, s-maxage=31536000";
@@ -524,6 +563,7 @@ http {
 
     location /2026 {
         include force_https.conf;
+        include github_pages.conf;
         proxy_hide_header Cache-Control;
         proxy_hide_header Expires;
         add_header Cache-Control "$implied_cache_control";
