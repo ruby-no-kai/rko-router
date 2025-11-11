@@ -127,6 +127,22 @@ resource "aws_cloudfront_response_headers_policy" "rko-router" {
     enabled       = true
     sampling_rate = 100
   }
+
+  # Function URL cannot return these headers directly and they get rewritten. Remove redundant headers.
+  remove_headers_config {
+    items {
+      header = "X-Amzn-Remapped-Connection"
+    }
+    items {
+      header = "X-Amzn-Remapped-Content-Length"
+    }
+    items {
+      header = "X-Amzn-Remapped-Server"
+    }
+    items {
+      header = "X-Amzn-Remapped-Date"
+    }
+  }
 }
 
 resource "null_resource" "tsc" {
