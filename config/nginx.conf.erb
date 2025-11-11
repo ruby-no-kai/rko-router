@@ -214,9 +214,10 @@ http {
     set $csp_policy "";
     set $csp_policy_report "";
     if ($http_x_forwarded_proto = "https") {
-      set $csp_policy "upgrade-insecure-requests; default-src https:";
+      set $csp_policy "upgrade-insecure-requests; frame-ancestors 'none'; default-src https:";
       set $csp_policy_report "default-src https:; report-uri https://<%= primary_host %>/_csp";
     }
+    add_header X-Content-Type-Options "nosniff";
     add_header Content-Security-Policy "$csp_policy";
     add_header Content-Security-Policy-Report-Only "$csp_policy_report";
     location ~ ^/oedo02(.*) {
@@ -501,9 +502,10 @@ http {
     set $csp_policy "";
     set $csp_policy_report "";
     if ($http_x_forwarded_proto = "https") {
-      set $csp_policy "default-src https:";
+      set $csp_policy "frame-ancestors 'none'; default-src https:";
       set $csp_policy_report "default-src https:; report-uri https://<%= primary_host %>/_csp";
     }
+    add_header X-Content-Type-Options "nosniff";
     add_header Content-Security-Policy "$csp_policy";
     add_header Content-Security-Policy-Report-Only "$csp_policy_report";
 
