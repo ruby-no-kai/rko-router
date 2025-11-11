@@ -190,8 +190,16 @@ describe "http://rubykaigi.org" do
       describe "/#{year}/" do
         let(:res) { http_get("https://rubykaigi.org/#{year}/") }
         it "returns minimum csp header" do
-          expect(res["content-security-policy"]).to include("upgrade-insecure-requests;")
           expect(res["content-security-policy-report-only"]).to include("default-src https:;")
+        end
+      end
+    end
+
+    (2006..2015).each do |year|
+      describe "/#{year}/" do
+        let(:res) { http_get("https://rubykaigi.org/#{year}/") }
+        it "returns minimum csp header" do
+          expect(res["content-security-policy"]).to include("upgrade-insecure-requests;")
         end
       end
     end
