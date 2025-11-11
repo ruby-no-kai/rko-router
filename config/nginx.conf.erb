@@ -1,6 +1,7 @@
 <% primary_host = ENV.fetch('PRIMARY_HOST', 'rko-router.invalid') %>
 <% jump_host = ENV.fetch('JUMP_HOST', 'jump.rko-router.invalid') %>
 <% platform = ENV.fetch("RKO_ROUTER_PLATFORM", "heroku") %>
+<% stdout = platform == 'heroku' ? 'logs/nginx/access.log' : '/dev/stdout' %>
 <% current_year = '2026' %>
 
 <% if platform == 'heroku' %>
@@ -50,7 +51,12 @@ http {
     default "http";
   }
 
-  access_log <%= platform == 'heroku' ? 'logs/nginx/access.log' : '/dev/stdout' %> l2met;
+  map $status $loggable_error {
+    ~^[234]  0;
+    default 1;
+  }
+
+  access_log <%= stdout %> l2met;
   error_log <%= platform == 'heroku' ? 'logs/nginx/access.log' : '/dev/stderr' %>;
 
   include mime.types;
@@ -86,7 +92,7 @@ http {
           return 415;
       }
 
-      access_log <%= platform == 'heroku' ? 'logs/nginx/access.log' : '/dev/stdout' %> csp_report;
+      access_log <%= stdout %> csp_report;
 
       # To enable $request_body
       proxy_set_header Host localhost;
@@ -100,6 +106,7 @@ http {
     }
 
     location = /healthz {
+      access_log off;
       return 200 "<%= primary_host %>\n";
     }
 
@@ -133,6 +140,7 @@ http {
     listen <%= ENV.fetch("PORT") %>;
     server_name <%= jump_host %>;
 
+    access_log <%= stdout %> l2met if=$loggable_error;
     default_type text/plain;
 
     location = /healthz {
