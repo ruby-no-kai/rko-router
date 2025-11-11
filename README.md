@@ -48,10 +48,11 @@ Test against production:
 bundle exec rspec -fd ./spec
 ```
 
-Test against alternate deployment:
+Test against alternate rko-router, use `$TARGET_HOST`. This enables `x-rko-host` and `x-rko-xfp` headers when sending request. If you want to test against production, you need to specify deployment url directly (App Router service URL, Lambda function URL) instead of CNAMEs under rubykaigi domains.
 
 ```
-bundle exec env TARGET_HOST=https://rko-router.herokuapp.com rspec -fd ./spec
+TARGET_HOST=http://$(docker port rko-router 8080) bundle exec rspec -fd ./spec
+TARGET_HOST=https://rko-router.invalid bundle exec env rspec -fd ./spec
 ```
 
 ## AWS Login
