@@ -1,7 +1,22 @@
 require_relative "./spec_helper"
 
 describe "http://rubykaigi.org" do
-  let(:latest_year) { "2026" }
+  LATEST_YEAR = "2026"
+  HOSTED_YEARS = [
+    *(2006..2020),
+    '2020-takeout',
+    '2021-takeout',
+    *(2022..LATEST_YEAR.to_i),
+  ].map(&:to_s).freeze
+
+  let(:latest_year) { LATEST_YEAR }
+
+  describe "meta: HOSTED_YEARS" do
+    subject { HOSTED_YEARS }
+    it { is_expected.to include(latest_year.to_s) }
+  end
+
+
 
   describe "(https) /" do
     let(:res) { http_get("https://rubykaigi.org/") }
@@ -127,13 +142,6 @@ describe "http://rubykaigi.org" do
       expect(res.code).to eq("404")
     end
   end
-
-  HOSTED_YEARS = [
-    *(2006..2020),
-    '2020-takeout',
-    '2021-takeout',
-    *(2022..2023),
-  ]
 
   describe "force_https" do
     HOSTED_YEARS.each do |year|
