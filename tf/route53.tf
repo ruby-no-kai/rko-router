@@ -25,8 +25,11 @@ resource "aws_route53_record" "rko-router-rk-n_HTTPS" {
   name     = "rko-router.rubykaigi.net."
   zone_id  = each.value
   type     = "HTTPS"
-  ttl      = 60
-  records  = ["1 . alpn=\"h3,h2\""]
+  alias {
+    name                   = aws_cloudfront_distribution.rko-router.domain_name
+    zone_id                = aws_cloudfront_distribution.rko-router.hosted_zone_id
+    evaluate_target_health = true
+  }
 }
 
 data "aws_route53_zone" "rubykaigi-net_public" {
