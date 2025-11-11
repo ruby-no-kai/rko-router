@@ -220,6 +220,7 @@ http {
     add_header X-Content-Type-Options "nosniff";
     add_header Content-Security-Policy "$csp_policy";
     add_header Content-Security-Policy-Report-Only "$csp_policy_report";
+
     location ~ ^/oedo02(.*) {
       return 301 https://magazine.rubyist.net/articles/0039/0039-MetPragdaveAtAsakusarb.html;
     }
@@ -506,6 +507,7 @@ http {
       set $csp_policy_report "default-src https:; report-uri https://<%= primary_host %>/_csp";
     }
     add_header X-Content-Type-Options "nosniff";
+    add_header Strict-Transport-Security "max-age=31536000";
     add_header Content-Security-Policy "$csp_policy";
     add_header Content-Security-Policy-Report-Only "$csp_policy_report";
 
@@ -515,7 +517,7 @@ http {
         proxy_hide_header Cache-Control;
         proxy_hide_header Expires;
         # 2015 sites and prior had mixed content issues
-        set $csp_policy "upgrade-insecure-requests; default-src https:";
+        set $csp_policy "upgrade-insecure-requests; frame-ancestors 'none'; default-src https:";
         add_header Cache-Control "public, max-age=604800, s-maxage=31536000";
         proxy_pass https://2009-2011.rubykaigi.org;
     }

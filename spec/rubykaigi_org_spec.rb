@@ -185,12 +185,15 @@ describe "http://rubykaigi.org" do
     end
   end
 
-  describe "csp" do
+  describe "security headers" do
     HOSTED_YEARS.each do |year|
       describe "/#{year}/" do
         let(:res) { http_get("https://rubykaigi.org/#{year}/") }
-        it "returns minimum csp header" do
-          expect(res["content-security-policy-report-only"]).to include("default-src https:;")
+        it "returns security header" do
+          expect(res["content-security-policy-report-only"]).to include("default-src https:")
+          expect(res["content-security-policy"]).to include("frame-ancestors 'none'")
+          expect(res["x-content-type-options"]).to eq("nosniff")
+          expect(res["strict-transport-security"]).to include("max-age=")
         end
       end
     end
@@ -198,8 +201,9 @@ describe "http://rubykaigi.org" do
     (2006..2015).each do |year|
       describe "/#{year}/" do
         let(:res) { http_get("https://rubykaigi.org/#{year}/") }
-        it "returns minimum csp header" do
-          expect(res["content-security-policy"]).to include("upgrade-insecure-requests;")
+        it "returns security header" do
+          expect(res["content-security-policy"]).to include("default-src https:")
+          expect(res["content-security-policy"]).to include("upgrade-insecure-requests")
         end
       end
     end
