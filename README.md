@@ -2,7 +2,7 @@
 
 nginx container deployed on Lambda Function URL and served through CloudFront.
 
-Detailed docs for RubyKaigi orgz: https://rubykaigi.esa.io/posts/1241
+- Detailed docs for RubyKaigi orgz: https://rubykaigi.esa.io/posts/1241
 
 ## Quick Reference
 
