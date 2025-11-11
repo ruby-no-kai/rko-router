@@ -54,7 +54,3 @@ Test against alternate rko-router, use `$TARGET_HOST`. This enables `x-rko-host`
 TARGET_HOST=http://$(docker port rko-router 8080) bundle exec rspec -fd ./spec
 TARGET_HOST=https://rko-router.invalid bundle exec env rspec -fd ./spec
 ```
-
-## AWS Login
-
-https://rubykaigi.esa.io/posts/813
