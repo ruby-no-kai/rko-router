@@ -56,7 +56,7 @@ http {
     "~^(?P<path>[^?]*)(\?.*)?$"  $path;
   }
   map $request_uri_path $implied_cache_control {
-    "~\.(?:png|jpg|svg|webp|ttf|css|js|js\.map)$"  "public, max-age=31536000";
+    "~\.(?:png|jpg|svg|webp|ttf|woff2|css|js|js\.map)$"  "public, max-age=31536000";
     default "public, max-age=0, s-maxage=31536000";
   }
 
