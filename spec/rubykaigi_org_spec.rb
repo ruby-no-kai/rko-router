@@ -1,7 +1,22 @@
 require_relative "./spec_helper"
 
 describe "http://rubykaigi.org" do
-  let(:latest_year) { "2026" }
+  LATEST_YEAR = "2026"
+  HOSTED_YEARS = [
+    *(2006..2020),
+    '2020-takeout',
+    '2021-takeout',
+    *(2022..LATEST_YEAR.to_i),
+  ].map(&:to_s).freeze
+
+  let(:latest_year) { LATEST_YEAR }
+
+  describe "meta: HOSTED_YEARS" do
+    subject { HOSTED_YEARS }
+    it { is_expected.to include(latest_year.to_s) }
+  end
+
+
 
   describe "(https) /" do
     let(:res) { http_get("https://rubykaigi.org/") }
@@ -128,13 +143,6 @@ describe "http://rubykaigi.org" do
     end
   end
 
-  HOSTED_YEARS = [
-    *(2006..2020),
-    '2020-takeout',
-    '2021-takeout',
-    *(2022..2023),
-  ]
-
   describe "force_https" do
     HOSTED_YEARS.each do |year|
       describe "/#{year}" do
@@ -176,6 +184,31 @@ describe "http://rubykaigi.org" do
       end
     end
   end
+
+  describe "security headers" do
+    HOSTED_YEARS.each do |year|
+      describe "/#{year}/" do
+        let(:res) { http_get("https://rubykaigi.org/#{year}/") }
+        it "returns security header" do
+          expect(res["content-security-policy-report-only"]).to include("default-src https:")
+          expect(res["content-security-policy"]).to include("frame-ancestors 'none'")
+          expect(res["x-content-type-options"]).to eq("nosniff")
+          expect(res["strict-transport-security"]).to include("max-age=")
+        end
+      end
+    end
+
+    (2006..2015).each do |year|
+      describe "/#{year}/" do
+        let(:res) { http_get("https://rubykaigi.org/#{year}/") }
+        it "returns security header" do
+          expect(res["content-security-policy"]).to include("default-src https:")
+          expect(res["content-security-policy"]).to include("upgrade-insecure-requests")
+        end
+      end
+    end
+  end
+
 
   HOSTED_YEARS.each do |year|
     describe "/#{year}/" do

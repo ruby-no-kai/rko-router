@@ -87,13 +87,12 @@ You need to manually invalidate the cache: https://rubykaigi.esa.io/posts/1241#%
 ## Run locally
 
 ```
-docker build -t rko-router:latest .
-docker run --rm --name rko-router --publish 127.0.0.1::8080 rko-router:latest
+docker compose up --watch
 ```
 
 ```
-curl -H Host:rubykaigi.org http://$(docker port rko-router 8080)/
-TARGET_HOST=http://$(docker port rko-router 8080) bundle exec rspec
+curl -H Host:rubykaigi.org http://$(docker compose port nginx 8080)/
+TARGET_HOST=http://$(docker compose port nginx 8080) bundle exec rspec
 ```
 
 ## Test

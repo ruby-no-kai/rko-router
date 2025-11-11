@@ -91,6 +91,8 @@ http {
 
   rewrite_log <%= ENV.fetch("REWRITE_LOG", 'off') %>;
 
+  add_header_inherit merge;
+
   server {
     listen <%= ENV.fetch("PORT") %> default_server;
     server_name <%= primary_host %> localhost;
@@ -210,10 +212,14 @@ http {
     server_name regional.rubykaigi.org;
 
     set $csp_policy "";
+    set $csp_policy_report "";
     if ($http_x_forwarded_proto = "https") {
-      set $csp_policy "default-src https: 'self' 'unsafe-inline' 'unsafe-eval'; report-uri https://<%= primary_host %>/_csp";
+      set $csp_policy "upgrade-insecure-requests; frame-ancestors 'none'; default-src https:";
+      set $csp_policy_report "default-src https:; report-uri https://<%= primary_host %>/_csp";
     }
-    add_header Content-Security-Policy-Report-Only "$csp_policy";
+    add_header X-Content-Type-Options "nosniff";
+    add_header Content-Security-Policy "$csp_policy";
+    add_header Content-Security-Policy-Report-Only "$csp_policy_report";
 
     location ~ ^/oedo02(.*) {
       return 301 https://magazine.rubyist.net/articles/0039/0039-MetPragdaveAtAsakusarb.html;
@@ -495,21 +501,28 @@ http {
     server_name rubykaigi.org;
 
     set $csp_policy "";
+    set $csp_policy_report "";
     if ($http_x_forwarded_proto = "https") {
-      set $csp_policy "default-src https: 'self' 'unsafe-inline' 'unsafe-eval'; report-uri https://<%= primary_host %>/_csp";
+      set $csp_policy "frame-ancestors 'none'; default-src https:";
+      set $csp_policy_report "default-src https:; report-uri https://<%= primary_host %>/_csp";
     }
-    add_header Content-Security-Policy-Report-Only "$csp_policy";
+    add_header X-Content-Type-Options "nosniff";
+    add_header Strict-Transport-Security "max-age=31536000";
+    add_header Content-Security-Policy "$csp_policy";
+    add_header Content-Security-Policy-Report-Only "$csp_policy_report";
 
-    location ~ ^/200[6-9] {
+    location ~ ^/20(0[6-9]|1[0-5])(.*) {
         include force_https.conf;
         include github_pages.conf;
         proxy_hide_header Cache-Control;
         proxy_hide_header Expires;
+        # 2015 sites and prior had mixed content issues
+        set $csp_policy "upgrade-insecure-requests; frame-ancestors 'none'; default-src https:";
         add_header Cache-Control "public, max-age=604800, s-maxage=31536000";
         proxy_pass https://2009-2011.rubykaigi.org;
     }
 
-    location ~ ^/201[0-9](.*) {
+    location ~ ^/201[6-9](.*) {
         include force_https.conf;
         include github_pages.conf;
         proxy_hide_header Cache-Control;
