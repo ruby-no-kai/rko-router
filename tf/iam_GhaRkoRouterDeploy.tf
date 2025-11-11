@@ -16,7 +16,6 @@ data "aws_iam_policy_document" "rko-router-deploy-trust" {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
       values = [
-        "repo:ruby-no-kai/rko-router:environment:apprunner-prod",
         "repo:ruby-no-kai/rko-router:environment:lambda-prod",
         "repo:ruby-no-kai/rko-router:ref:refs/heads/master",
         "repo:ruby-no-kai/rko-router:ref:refs/heads/test",
@@ -70,55 +69,19 @@ data "aws_iam_policy_document" "rko-router-deploy-apprunner" {
   statement {
     effect = "Allow"
     actions = [
-      "iam:PassRole",
-    ]
-    resources = [aws_iam_role.rko-router-access.arn]
-
-    condition {
-      test     = "StringEquals"
-      variable = "token.actions.githubusercontent.com:sub"
-      values = [
-        "repo:ruby-no-kai/rko-router:environment:apprunner-prod",
-      ]
-    }
-  }
-
-  statement {
-    effect = "Allow"
-    actions = [
-      "apprunner:DescribeService",
-      "apprunner:UpdateService",
-      "apprunner:ListOperations"
-    ]
-    resources = [
-      aws_apprunner_service.rko-router.arn,
-    ]
-
-    condition {
-      test     = "StringEquals"
-      variable = "token.actions.githubusercontent.com:sub"
-      values = [
-        "repo:ruby-no-kai/rko-router:environment:apprunner-prod",
-      ]
-    }
-  }
-
-  statement {
-    effect = "Allow"
-    actions = [
-      "apprunner:ListServices",
-    ]
-    resources = ["*"]
-  }
-
-  statement {
-    effect = "Allow"
-    actions = [
       "lambda:UpdateFunctionCode",
     ]
     resources = [
       aws_lambda_function.rko-router.arn,
     ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "token.actions.githubusercontent.com:sub"
+      values = [
+        "repo:ruby-no-kai/rko-router:environment:lambda-prod",
+      ]
+    }
   }
 
   statement {

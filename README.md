@@ -1,8 +1,8 @@
 # rubykaigi.org router
 
-nginx container deployed on AWS App Runner and served through CloudFront.
+nginx container deployed on Lambda Function URL and served through CloudFront.
 
-Detailed docs for RubyKaigi orgz: https://rubykaigi.esa.io/posts/1241
+- Detailed docs for RubyKaigi orgz: https://rubykaigi.esa.io/posts/1241
 
 ## Quick Reference
 
@@ -65,14 +65,13 @@ If you're going to do something more than the above, continue reading. Don't for
 Deployments are automatically performed on GitHub Actions on `master` branch after CI.
 
 - Lambda: [rko-router](https://us-west-2.console.aws.amazon.com/lambda/home?region=us-west-2#/functions/rko-router?tab=monitoring)
-- App Runner (deprecated): [arn:aws:apprunner:us-west-2:005216166247:service/rko-router/2c9219ae5e14411baaf46fa932f33025](https://us-west-2.console.aws.amazon.com/apprunner/home?region=us-west-2#/services/dashboard?service_arn=arn%3Aaws%3Aapprunner%3Aus-west-2%3A005216166247%3Aservice%2Frko-router%2F2c9219ae5e14411baaf46fa932f33025&active_tab=logs)
 - CloudFront: [arn:aws:cloudfront::005216166247:distribution/E2WEWQCYU12GVD](https://us-east-1.console.aws.amazon.com/cloudfront/v3/home?region=ap-northeast-1#/distributions/E2WEWQCYU12GVD)
 
 All resources except deployment is managed under Terraform [./tf](./tf).
 
-### Domains
+### Serving multiple domains in production
 
-Due to the quota of custom domains per App Runner service and the lambda function URL, the first hop on rko-router proxies a request to itself with correct `Host` header. We call this virtual host a _jump host._
+Because Lambda Function URL does not support custom domains, the first hop on rko-router proxies a request to itself with correct `Host` header. We call this virtual host a _jump host._
 
 `x-rko-host` and `x-rko-xfp` headers are referenced as a `Host` and `X-Forwarded-Proto` header for the second hop.
 
