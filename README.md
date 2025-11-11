@@ -4,6 +4,62 @@ nginx container deployed on AWS App Runner and served through CloudFront.
 
 Detailed docs for RubyKaigi orgz: https://rubykaigi.esa.io/posts/1241
 
+## Quick Reference
+
+### Add regional.rubykaigi.org subdirectory
+
+1. Prepare GitHub Pages. No need to configure custom domain.
+2. Write the following configuration to [./config/nginx.conf.erb](./config/nginx.conf.erb). Replace path, ORG_NAME and REPO_NAME with the actual value accordingly.
+
+   Add a new location block right before `regional.rubykaigi.org` location. Leave other parts as is.
+
+   ```nginx
+   # ...
+
+   location /penacony42 {
+      include force_https.conf;
+      include github_pages.conf;
+      proxy_redirect https://ORG_NAME.github.io/REPO_NAME $map_request_proto://$http_host/REPO_NAME;
+      proxy_pass https://ORG_NAME.github.io;
+   }
+
+   # regional.rubykaigi.org
+   location / {
+     # ...
+   }
+   ```
+
+3. Submit a PR and wait for review.
+
+__Cache:__ With the above configuration, our CDN respects GitHub Pages cache headers. As of Nov 2025, it is currently set to 10 minutes for everything. Contact RubyKaigi admins if you need immediate cache invalidation. We recommend to enable asset file hashing to avoid cache issues.
+
+### Switch _the year_ of rubykaigi.org
+
+Change the following values to the desired year. This will update `/` to redirect to the new year's website (`/YYYY/`), and serve `/#{year}` and `/#{year+1}` from the [rubykaigi.org repo](https://github.com/ruby-no-kai/rubykaigi.org). Make sure `#{year-1}` is switched to the archive beforehand.
+
+- `current_year` value in [./config/nginx.conf.erb](./config/nginx.conf.erb)
+- `latest_year` value in [./spec/rubykaigi_org_spec.rb](./spec/rubykaigi_org_spec.rb)
+
+You'll need to invalidate CloudFront cache of root page `/` after deploy.
+
+### Archive old rubykaigi.org year
+
+Update `# RubyKaigi Archives` location path regex accordingly in [./config/nginx.conf.erb](./config/nginx.conf.erb).
+
+```nginx
+# RubyKaigi Archives
+location ~ ^/202[2-5] {
+  include force_https.conf;
+  # ...
+```
+
+You'll need to invalidate CloudFront cache of the archived year `/YYYY` after deploy.
+
+
+----
+
+If you're going to do something more than the above, continue reading. Don't forget to write tests for new functionailities.
+
 ## Deploy
 
 Deployments are automatically performed on GitHub Actions on `master` branch after CI.
