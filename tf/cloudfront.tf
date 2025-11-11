@@ -41,25 +41,6 @@ resource "aws_cloudfront_distribution" "rko-router" {
   }
 
   origin {
-    origin_id   = "rko-router-apprunner"
-    domain_name = replace(aws_apprunner_service.rko-router.service_url, "https://", "")
-
-    custom_origin_config {
-      http_port                = 80
-      https_port               = 443
-      origin_protocol_policy   = "https-only"
-      origin_ssl_protocols     = ["TLSv1.2"]
-      origin_keepalive_timeout = 30
-      origin_read_timeout      = 35
-    }
-
-    origin_shield {
-      enabled              = true
-      origin_shield_region = "us-west-2"
-    }
-  }
-
-  origin {
     origin_id   = "rko-router-lambda"
     domain_name = replace(aws_lambda_function_url.rko-router.function_url, "/^https:\\/+|\\/$/", "")
 

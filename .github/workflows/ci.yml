@@ -58,38 +58,6 @@ jobs:
           push: true
           tags: "${{ steps.login-ecr.outputs.registry }}/rko-router:${{ github.sha }},${{ steps.login-ecr.outputs.registry }}/rko-router:latest"
 
-  deploy-apprunner:
-    name: deploy-apprunner
-    if: "github.ref == 'refs/heads/master'"
-    environment:
-      name: apprunner-prod
-      url: https://rko-router.rubykaigi.org
-    concurrency:
-      group: apprunner-prod
-    permissions:
-      contents: read
-      id-token: write
-    runs-on: ubuntu-latest
-    needs:
-      - ci
-    steps:
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-region: "us-west-2"
-          role-skip-session-tagging: true
-          role-to-assume: "arn:aws:iam::005216166247:role/GhaRkoRouterDeploy"
-          mask-aws-account-id: 'false' # only string works
-      - uses: awslabs/amazon-app-runner-deploy@v2.5.2
-        with:
-          region: "us-west-2"
-          service: "rko-router"
-          image: "${{needs.ci.outputs.image-tag}}"
-          access-role-arn:  "arn:aws:iam::005216166247:role/AppraRkoRouter"
-          wait-for-service-stability: true
-          cpu: '0.25' # vCPU
-          memory: '0.5' # GB
-          port: "8080"
-
   deploy-lambda:
     name: deploy-lambda
     if: "github.ref == 'refs/heads/master'"

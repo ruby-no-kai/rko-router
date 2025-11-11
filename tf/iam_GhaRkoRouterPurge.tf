@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "rko-router-purge-trust" {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
       values = [
-        "repo:ruby-no-kai/rko-router:environment:apprunner-prod",
+        "repo:ruby-no-kai/rko-router:environment:lambda-prod",
         "repo:ruby-no-kai/rubykaigi.org:environment:github-pages",
       ]
     }
