@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.2'
+          ruby-version: '3.4'
           bundler-cache: true
       - uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -57,8 +57,10 @@ jobs:
           context: '.'
           push: true
           tags: "${{ steps.login-ecr.outputs.registry }}/rko-router:${{ github.sha }},${{ steps.login-ecr.outputs.registry }}/rko-router:latest"
-  deploy:
-    name: deploy
+
+  deploy-apprunner:
+    name: deploy-apprunner
+    if: "github.ref == 'refs/heads/master'"
     environment:
       name: apprunner-prod
       url: https://rko-router.rubykaigi.org
@@ -88,3 +90,27 @@ jobs:
           memory: '0.5' # GB
           port: "8080"
 
+  deploy-lambda:
+    name: deploy-lambda
+    if: "github.ref == 'refs/heads/master'"
+    environment:
+      name: lambda-prod
+      url: https://rko-router.rubykaigi.org
+    concurrency:
+      group: lambda-prod
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-slim
+    needs:
+      - ci
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: "us-west-2"
+          role-skip-session-tagging: true
+          role-to-assume: "arn:aws:iam::005216166247:role/GhaRkoRouterDeploy"
+          mask-aws-account-id: 'false' # only string works
+      - run: 'aws lambda update-function-code --function-name rko-router --image-uri "$IMAGE_URI"'
+        env:
+          IMAGE_URI: "${{needs.ci.outputs.image-tag}}"

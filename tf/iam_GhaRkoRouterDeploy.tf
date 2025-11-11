@@ -17,6 +17,7 @@ data "aws_iam_policy_document" "rko-router-deploy-trust" {
       variable = "token.actions.githubusercontent.com:sub"
       values = [
         "repo:ruby-no-kai/rko-router:environment:apprunner-prod",
+        "repo:ruby-no-kai/rko-router:environment:lambda-prod",
         "repo:ruby-no-kai/rko-router:ref:refs/heads/master",
         "repo:ruby-no-kai/rko-router:ref:refs/heads/test",
       ]
@@ -109,4 +110,26 @@ data "aws_iam_policy_document" "rko-router-deploy-apprunner" {
     ]
     resources = ["*"]
   }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "lambda:UpdateFunctionCode",
+    ]
+    resources = [
+      aws_lambda_function.rko-router.arn,
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "ecr:BatchGetImage",
+      "ecr:GetDownloadUrlForLayer",
+    ]
+    resources = [
+      aws_ecr_repository.rko-router.arn,
+    ]
+  }
+
 }

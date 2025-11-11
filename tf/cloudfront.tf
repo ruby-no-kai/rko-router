@@ -59,24 +59,50 @@ resource "aws_cloudfront_distribution" "rko-router" {
     }
   }
 
+  origin {
+    origin_id   = "rko-router-lambda"
+    domain_name = replace(aws_lambda_function_url.rko-router.function_url, "/^https:\\/+|\\/$/", "")
+
+    custom_origin_config {
+      http_port                = 80
+      https_port               = 443
+      origin_protocol_policy   = "https-only"
+      origin_ssl_protocols     = ["TLSv1.2"]
+      origin_keepalive_timeout = 30
+      origin_read_timeout      = 35
+    }
+
+    origin_shield {
+      enabled              = true
+      origin_shield_region = "us-west-2"
+    }
+  }
+
   ordered_cache_behavior {
     path_pattern = "/_csp"
 
     allowed_methods        = ["GET", "HEAD", "OPTIONS", "POST", "PUT", "PATCH", "DELETE"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id       = "rko-router-apprunner"
+    target_origin_id       = "rko-router-lambda"
     viewer_protocol_policy = "https-only"
 
-    cache_policy_id = data.aws_cloudfront_cache_policy.Managed-CachingDisabled.id
+    cache_policy_id            = data.aws_cloudfront_cache_policy.Managed-CachingDisabled.id
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.rko-router.id
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.rko-router-viewreq.arn
+    }
   }
 
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id       = "rko-router-apprunner"
+    target_origin_id       = "rko-router-lambda"
     viewer_protocol_policy = "allow-all"
 
-    cache_policy_id = aws_cloudfront_cache_policy.rko-router-default.id
+    cache_policy_id            = aws_cloudfront_cache_policy.rko-router-default.id
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.rko-router.id
 
     function_association {
       event_type   = "viewer-request"
@@ -116,25 +142,57 @@ resource "aws_cloudfront_cache_policy" "rko-router-default" {
     }
   }
 }
+
+resource "aws_cloudfront_response_headers_policy" "rko-router" {
+  name    = "rko-router"
+  comment = "rko-router"
+
+  server_timing_headers_config {
+    enabled       = true
+    sampling_rate = 100
+  }
+
+  # Function URL cannot return these headers directly and they get rewritten. Remove redundant headers.
+  remove_headers_config {
+    items {
+      header = "X-Amzn-Remapped-Connection"
+    }
+    items {
+      header = "X-Amzn-Remapped-Content-Length"
+    }
+    items {
+      header = "X-Amzn-Remapped-Server"
+    }
+    items {
+      header = "X-Amzn-Remapped-Date"
+    }
+  }
+}
+
 resource "null_resource" "tsc" {
   triggers = {
     tsdgst = join("", [
       sha256(join("", [for f in fileset("${path.module}/cf_functions", "src/**/*.ts") : filesha256("${path.module}/cf_functions/${f}")])),
-      filesha256("${path.module}/cf_functions/package-lock.json"),
+      filesha256("${path.module}/cf_functions/pnpm-lock.yaml"),
     ])
   }
   provisioner "local-exec" {
-    command = "cd ${path.module}/cf_functions && npm i && tsc -b"
+    command = "cd ${path.module}/cf_functions && pnpm i && tsc -b"
   }
+}
+
+data "local_file" "viewreq" {
+  filename   = "${path.module}/cf_functions/src/viewreq.js"
+  depends_on = [null_resource.tsc]
 }
 
 resource "aws_cloudfront_function" "rko-router-viewreq" {
   provider = aws.use1
   name     = "rko-router-viewreq"
   comment  = "rko-router viewer-request"
-  runtime  = "cloudfront-js-1.0"
+  runtime  = "cloudfront-js-2.0"
   publish  = true
-  code     = file("${path.module}/cf_functions/src/viewreq.js")
+  code     = "${replace(data.local_file.viewreq.content, "/(?m)^export function handler/", "function handler")}\n// 1"
 
   depends_on = [null_resource.tsc]
 }
