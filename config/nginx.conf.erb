@@ -1,4 +1,5 @@
 <% primary_host = ENV.fetch('PRIMARY_HOST', 'rko-router.invalid') %>
+<% jump_host = ENV.fetch('JUMP_HOST', 'jump.rko-router.invalid') %>
 <% platform = ENV.fetch("RKO_ROUTER_PLATFORM", "heroku") %>
 <% current_year = '2026' %>
 
@@ -111,6 +112,42 @@ http {
       }
       if ( $http_x_rko_forwarded = "yes" ) {
         return 404 "<%= primary_host %> (loop)\n";
+      }
+
+      set $x_rko_xfp "$http_x_rko_xfp";
+      if ( $x_rko_xfp = "" ) {
+        set $x_rko_xfp "$http_x_forwarded_proto";
+      }
+      if ( $x_rko_xfp = "" ) {
+        set $x_rko_xfp "http";
+      }
+
+      proxy_set_header Host $http_x_rko_host;
+      proxy_set_header X-Forwarded-Proto $x_rko_xfp;
+      proxy_set_header x-rko-forwarded "yes";
+      proxy_pass http://localhost:<%= ENV.fetch("PORT") %>;
+    }
+  }
+
+  server {
+    listen <%= ENV.fetch("PORT") %>;
+    server_name <%= jump_host %>;
+
+    default_type text/plain;
+
+    location = /healthz {
+      return 200 "<%= primary_host %> (jump)\n";
+    }
+
+    location / {
+      if ( $http_x_rko_host = "" ) {
+        return 404 "<%= primary_host %> (jump, no x-rko-host)\n";
+      }
+      if ( $http_x_rko_host = $http_host ) {
+        return 404 "<%= primary_host %> (jump, x-rko-host as jump)\n";
+      }
+      if ( $http_x_rko_forwarded = "yes" ) {
+        return 500 "<%= primary_host %> (jump, loop)\n";
       }
 
       set $x_rko_xfp "$http_x_rko_xfp";
