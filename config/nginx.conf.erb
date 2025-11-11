@@ -23,12 +23,26 @@ http {
   gzip_comp_level 2;
   gzip_min_length 512;
 
-  log_format l2met 'measure#nginx.service=$request_time request_id=$http_x_request_id '
-    '$http_x_forwarded_for - $remote_user [$time_local] '
-    '"$request" $status $bytes_sent '
-    '"$http_referer" "$http_user_agent" "$gzip_ratio"';
+  log_format json escape=json '{"status":$status,'
+    '"time":"$time_iso8601",'
+    '"method":"$request_method",'
+    '"uri":"$request_uri",'
+    '"srv":"$server_name",'
+    '"vhost":"$host",'
+    '"ip":"$remote_addr",'
+    '"xff":"$http_x_forwarded_for",'
+    '"size":$body_bytes_sent,'
+    '"reqsize":$request_length,'
+    '"runtime":"$upstream_http_x_runtime",'
+    '"apptime":$upstream_response_time,'
+    '"reqtime":$request_time,'
+    '"id":"$http_x_request_id"}';
 
-  log_format csp_report 'measure#nginx.service=$request_time request_id=$http_x_request_id xff=$http_x_forwarded_for referer="$http_referer" ua="$http_user_agent" csp.report=$request_body';
+  log_format csp_report escape=json '{"type":"csp",'
+    '"time":"$time_iso8601",'
+    '"id":"$http_x_request_id",'
+    '"csp_report":"$request_body"}';
+
   map $status $csp_loggable {
       "200"  1;
       default 0;
@@ -56,7 +70,7 @@ http {
     default 1;
   }
 
-  access_log <%= stdout %> l2met;
+  access_log <%= stdout %> json;
   error_log <%= platform == 'heroku' ? 'logs/nginx/access.log' : '/dev/stderr' %>;
 
   include mime.types;
@@ -84,6 +98,8 @@ http {
     }
 
     location = /_csp {
+      client_max_body_size 2k;
+
       if ($request_method != "POST") {
           return 405;
       }
@@ -145,7 +161,7 @@ http {
     listen <%= ENV.fetch("PORT") %>;
     server_name <%= jump_host %>;
 
-    access_log <%= stdout %> l2met if=$loggable_error;
+    access_log <%= stdout %> json if=$loggable_error;
     default_type text/plain;
 
     location = /healthz {
