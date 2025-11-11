@@ -110,6 +110,11 @@ http {
       return 200 "<%= primary_host %>\n";
     }
 
+    # Lambda web adapter event passthrough path
+    location = /_events {
+      return 404 "\n";
+    }
+
     location / {
       if ( $http_x_rko_host = "" ) {
         return 404 "<%= primary_host %>\n";
