@@ -8,8 +8,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.9.1 /lambda-adapter /opt/extensions/lambda-adapter
 
 # Replace /etc/nginx with a temporary directory for Lambda, where /etc/nginx is read-only
-RUN mv /etc/nginx /etc/nginx.base
-RUN ln -s /tmp/run/etc-nginx /etc/nginx \
+# /run is for /run/nginx.pid
+RUN mv /etc/nginx /etc/nginx.base \
+ && rm -rf /run && ln -s /tmp/run /run \
+ && ln -s /tmp/run/etc-nginx /etc/nginx \
  && rm -rf /etc/nginx.base/conf.d/default.conf \
  && rm -v /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh # We don't use conf.d/default.conf
 
