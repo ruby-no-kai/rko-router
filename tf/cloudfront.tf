@@ -116,25 +116,31 @@ resource "aws_cloudfront_cache_policy" "rko-router-default" {
     }
   }
 }
+
 resource "null_resource" "tsc" {
   triggers = {
     tsdgst = join("", [
       sha256(join("", [for f in fileset("${path.module}/cf_functions", "src/**/*.ts") : filesha256("${path.module}/cf_functions/${f}")])),
-      filesha256("${path.module}/cf_functions/package-lock.json"),
+      filesha256("${path.module}/cf_functions/pnpm-lock.yaml"),
     ])
   }
   provisioner "local-exec" {
-    command = "cd ${path.module}/cf_functions && npm i && tsc -b"
+    command = "cd ${path.module}/cf_functions && pnpm i && tsc -b"
   }
+}
+
+data "local_file" "viewreq" {
+  filename   = "${path.module}/cf_functions/src/viewreq.js"
+  depends_on = [null_resource.tsc]
 }
 
 resource "aws_cloudfront_function" "rko-router-viewreq" {
   provider = aws.use1
   name     = "rko-router-viewreq"
   comment  = "rko-router viewer-request"
-  runtime  = "cloudfront-js-1.0"
+  runtime  = "cloudfront-js-2.0"
   publish  = true
-  code     = file("${path.module}/cf_functions/src/viewreq.js")
+  code     = "${replace(data.local_file.viewreq.content, "/(?m)^export function handler/", "function handler")}\n// 1"
 
   depends_on = [null_resource.tsc]
 }
