@@ -1,7 +1,7 @@
 function handler(
-  event: AWSCloudFrontFunction.Event
+  event: AWSCloudFrontFunction.Event,
 ): AWSCloudFrontFunction.Request {
-  const { request } = event;
+  const { request, context } = event;
 
   request.headers["x-rko-host"] = request.headers["host"];
 
@@ -11,6 +11,8 @@ function handler(
   } else {
     request.headers["x-rko-xfp"] = { value: "http" };
   }
+
+  request.headers["x-request-id"] = { value: context.requestId };
 
   return request;
 }
