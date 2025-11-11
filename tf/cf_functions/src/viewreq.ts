@@ -12,7 +12,5 @@ function handler(
     request.headers["x-rko-xfp"] = { value: "http" };
   }
 
-  request.headers["x-request-id"] = { value: context.requestId };
-
   return request;
 }
