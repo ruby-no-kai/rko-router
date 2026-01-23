@@ -76,6 +76,23 @@ resource "aws_cloudfront_distribution" "rko-router" {
     }
   }
 
+  ordered_cache_behavior {
+    path_pattern = "/go/*"
+
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    cached_methods         = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id       = "rko-router-lambda"
+    viewer_protocol_policy = "allow-all"
+
+    cache_policy_id            = aws_cloudfront_cache_policy.rko-router-querystring.id
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.rko-router.id
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.rko-router-viewreq.arn
+    }
+  }
+
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD", "OPTIONS"]
@@ -117,6 +134,33 @@ resource "aws_cloudfront_cache_policy" "rko-router-default" {
     }
     query_strings_config {
       query_string_behavior = "none"
+    }
+    cookies_config {
+      cookie_behavior = "none"
+    }
+  }
+}
+
+resource "aws_cloudfront_cache_policy" "rko-router-querystring" {
+  provider = aws.use1
+  name     = "rko-router-querystring"
+  comment  = "rko-router /go/* with query string in cache key"
+
+  min_ttl     = 1
+  default_ttl = 86400
+  max_ttl     = 31536000
+
+  parameters_in_cache_key_and_forwarded_to_origin {
+    enable_accept_encoding_brotli = true
+    enable_accept_encoding_gzip   = true
+    headers_config {
+      header_behavior = "whitelist"
+      headers {
+        items = ["x-rko-host", "x-rko-xfp", "cloudfront-forwarded-proto", "cloudfront-viewer-country", "accept-language"]
+      }
+    }
+    query_strings_config {
+      query_string_behavior = "all"
     }
     cookies_config {
       cookie_behavior = "none"
