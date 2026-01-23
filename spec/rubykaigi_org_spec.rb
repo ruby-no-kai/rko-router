@@ -50,6 +50,38 @@ describe "http://rubykaigi.org" do
     end
   end
 
+  describe "/go/prospectus-ja" do
+    let(:res) { http_get("https://rubykaigi.org/go/prospectus-ja") }
+    it "redirects to latest_year prospectus" do
+      expect(res.code).to eq("302")
+      expect(res["location"]).to eq("https://storage.rubykaigi.org/#{latest_year}/rubykaigi#{latest_year}-sponsorship-prospectus-ja.pdf")
+    end
+  end
+
+  describe "/go/prospectus-ja?2025" do
+    let(:res) { http_get("https://rubykaigi.org/go/prospectus-ja?2025") }
+    it "redirects to 2025 prospectus" do
+      expect(res.code).to eq("302")
+      expect(res["location"]).to eq("https://storage.rubykaigi.org/2025/rubykaigi2025-sponsorship-prospectus-ja.pdf")
+    end
+  end
+
+  describe "/go/prospectus-en" do
+    let(:res) { http_get("https://rubykaigi.org/go/prospectus-en") }
+    it "redirects to latest_year prospectus" do
+      expect(res.code).to eq("302")
+      expect(res["location"]).to eq("https://storage.rubykaigi.org/#{latest_year}/rubykaigi#{latest_year}-sponsorship-prospectus-en.pdf")
+    end
+  end
+
+  describe "/go/prospectus-en?2025" do
+    let(:res) { http_get("https://rubykaigi.org/go/prospectus-en?2025") }
+    it "redirects to 2025 prospectus" do
+      expect(res.code).to eq("302")
+      expect(res["location"]).to eq("https://storage.rubykaigi.org/2025/rubykaigi2025-sponsorship-prospectus-en.pdf")
+    end
+  end
+
   describe "(https) /2024/" do
     let(:res) { http_get("https://rubykaigi.org/2024/") }
     it "should render the top page" do

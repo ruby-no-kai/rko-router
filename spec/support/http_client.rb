@@ -18,7 +18,7 @@ module Helpers
         'x-rko-host' => uri.host,
         'x-rko-xfp' => uri.scheme,
       }
-      http.get(uri.path, headers)
+      http.get(uri.request_uri, headers)
     end
   end
 end
