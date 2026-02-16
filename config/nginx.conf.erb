@@ -403,6 +403,13 @@ http {
       proxy_set_header Host "asakusa.rubyist.net";
       proxy_pass https://asakusarb.github.io;
     }
+      
+    location /tokyo13 {
+      include force_https.conf;
+      include github_pages.conf;
+      proxy_redirect https://tokyorubykaigi-13.github.io/tokyo13 $map_request_proto://$http_host/tokyo13;
+      proxy_pass https://tokyorubykaigi-13.github.io;
+    }
 
     location /tokyo12 {
       include force_https.conf;
