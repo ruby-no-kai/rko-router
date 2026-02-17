@@ -640,6 +640,18 @@ http {
     location = /go/legal {
         return 302 https://rubykaigi.esa.io/posts/706;
     }
+    location = /go/github {
+        return 302 https://github.com/ruby-no-kai/rubykaigi.org;
+    }
+    location = /go/git {
+        return 302 https://github.com/ruby-no-kai/rubykaigi.org;
+    }
+    location = /go/repo {
+        return 302 https://github.com/ruby-no-kai/rubykaigi.org;
+    }
+    location = /go/issues {
+        return 302 https://github.com/ruby-no-kai/rubykaigi.org/issues;
+    }
     location = /go/program {
         # 2026
         return 302 https://rubykaigi.esa.io/posts/1505;
