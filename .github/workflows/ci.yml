@@ -14,6 +14,7 @@ jobs:
     outputs:
       image-tag: "${{ steps.login-ecr.outputs.registry }}/rko-router:${{ github.sha }}-amd64"
     steps:
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3.12.0
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ruby/setup-ruby@09a7688d3b55cf0e976497ff046b70949eeaccfd # v1.288.0
         with:
@@ -53,7 +54,7 @@ jobs:
           set -x
           export TARGET_HOST="http://$(docker port rko-router-dut 8080)"
           bundle exec rspec -fd || ( docker logs rko-router-dut; false )
-      - name: 'Push Docker image'
+      - name: 'Push Docker tag'
         uses: 'docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8' # v6.19.2
         with:
           context: '.'
@@ -61,7 +62,7 @@ jobs:
           tags: "${{ steps.login-ecr.outputs.registry }}/rko-router:${{ github.sha }},${{ steps.login-ecr.outputs.registry }}/rko-router:latest"
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      - name: 'Push Docker image'
+      - name: 'Push Docker tag (non-manifest)'
         uses: 'docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8' # v6.19.2
         with:
           context: '.'
