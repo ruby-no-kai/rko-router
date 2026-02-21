@@ -12,27 +12,29 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     outputs:
-      image-tag: "${{ steps.login-ecr.outputs.registry }}/rko-router:${{ github.sha }}"
+      image-tag: "${{ steps.login-ecr.outputs.registry }}/rko-router:${{ github.sha }}-amd64"
     steps:
-      - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: ruby/setup-ruby@09a7688d3b55cf0e976497ff046b70949eeaccfd # v1.288.0
         with:
-          ruby-version: '3.4'
+          ruby-version: '4.0'
           bundler-cache: true
-      - uses: aws-actions/configure-aws-credentials@v4
+      - uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6.0.0
         with:
           aws-region: "us-west-2"
           role-skip-session-tagging: true
           role-to-assume: "arn:aws:iam::005216166247:role/GhaRkoRouterDeploy"
           mask-aws-account-id: 'false' # only string works
       - id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+        uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 # v2.0.1
       - name: 'Build Docker image'
-        uses: 'docker/build-push-action@v3'
+        uses: 'docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8' # v6.19.2
         with:
           context: '.'
           load: true
           tags: "rko-router-test:latest,${{ steps.login-ecr.outputs.registry }}/rko-router:${{ github.sha }},${{ steps.login-ecr.outputs.registry }}/rko-router:latest"
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       - name: 'Start container for test'
         run: |
           set -x
@@ -52,11 +54,24 @@ jobs:
           export TARGET_HOST="http://$(docker port rko-router-dut 8080)"
           bundle exec rspec -fd || ( docker logs rko-router-dut; false )
       - name: 'Push Docker image'
-        uses: 'docker/build-push-action@v5'
+        uses: 'docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8' # v6.19.2
         with:
           context: '.'
           push: true
           tags: "${{ steps.login-ecr.outputs.registry }}/rko-router:${{ github.sha }},${{ steps.login-ecr.outputs.registry }}/rko-router:latest"
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: 'Push Docker image'
+        uses: 'docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8' # v6.19.2
+        with:
+          context: '.'
+          push: true
+          tags: "${{ steps.login-ecr.outputs.registry }}/rko-router:${{ github.sha }}-amd64"
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          # Lambda does not support manifest list
+          sbom: false
+          provenance: false
 
   deploy-lambda:
     name: deploy-lambda
@@ -73,7 +88,7 @@ jobs:
     needs:
       - ci
     steps:
-      - uses: aws-actions/configure-aws-credentials@v4
+      - uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6.0.0
         with:
           aws-region: "us-west-2"
           role-skip-session-tagging: true
