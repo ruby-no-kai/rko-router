@@ -21,7 +21,6 @@ describe "http://regional.rubykaigi.org" do
     describe(path) do
       let(:res) { http_get("https://regional.rubykaigi.org#{path}") }
       it "returns ok" do
-        pending 'kanrk05.herokuapp.com is down' if path == '/kansai05/'
         pending 'http://rubykaigi-hamamatsu.s3-website-ap-northeast-1.amazonaws.com/hamamatsu01/ returns C-T:application/javascript' if path == '/hamamatsu01/'
 
         expect(res.code).to eq("200")
@@ -74,7 +73,6 @@ describe "http://regional.rubykaigi.org" do
           let(:res) { http_get("https://regional.rubykaigi.org/#{subdir}/") }
 
           it "returns ok" do
-            #pending 'kanrk05.herokuapp.com is down' if path == '/kansai05/'
             #pending 'http://rubykaigi-hamamatsu.s3-website-ap-northeast-1.amazonaws.com/hamamatsu01/ returns C-T:application/javascript' if path == '/hamamatsu01/'
             #pending 'asakusa.github.io returns 301 (#110)' if path == '/oedo10/'
             expect(res.code).to eq("200")
