@@ -450,6 +450,13 @@ http {
       proxy_pass https://hokurikurb.github.io;
     }
 
+    location /hokuriku02 {
+      include force_https.conf;
+      include github_pages.conf;
+      proxy_redirect https://hokurikurb.github.io/hokuriku02 $map_request_proto://$http_host/hokuriku02;
+      proxy_pass https://hokurikurb.github.io;
+    }
+
     location /sendai03 {
       include force_https.conf;
       include github_pages.conf;
