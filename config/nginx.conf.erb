@@ -251,6 +251,13 @@ http {
       proxy_pass https://rubykansai.github.io;
     }
 
+    location /kansai10 {
+      include force_https.conf;
+      include github_pages.conf;
+      proxy_redirect https://rubykansai.github.io/kansai10 $map_request_proto://$http_host/kansai10;
+      proxy_pass https://rubykansai.github.io;
+    }
+
     location /kansai09 {
       include force_https.conf;
       include github_pages.conf;
