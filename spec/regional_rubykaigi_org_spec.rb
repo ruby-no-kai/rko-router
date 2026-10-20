@@ -50,6 +50,7 @@ describe "http://regional.rubykaigi.org" do
       tokyu08
       kana01
       oedo10
+      oedo11
       tokyo12
       tokyo11
       tokyu10
