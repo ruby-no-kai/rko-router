@@ -26,6 +26,12 @@ jobs:
           role-skip-session-tagging: true
           role-to-assume: "arn:aws:iam::005216166247:role/GhaRkoRouterDeploy"
           mask-aws-account-id: 'false' # only string works
+      # Authenticate to public.ecr.aws so base image pulls aren't subject to the
+      # anonymous per-IP data limit (shared by all GitHub-hosted runners)
+      - id: login-ecr-public
+        uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 # v2.0.1
+        with:
+          registry-type: public
       - id: login-ecr
         uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 # v2.0.1
       - name: 'Build Docker image'
