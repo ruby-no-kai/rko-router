@@ -19,6 +19,7 @@ data "aws_iam_policy_document" "rko-router-deploy-trust" {
         "repo:ruby-no-kai/rko-router:environment:lambda-prod",
         "repo:ruby-no-kai/rko-router:ref:refs/heads/master",
         "repo:ruby-no-kai/rko-router:ref:refs/heads/test",
+        "repo:ruby-no-kai/rko-router:pull_request", # non-fork PRs: public.ecr.aws login only (see below)
       ]
     }
   }
@@ -35,6 +36,7 @@ data "aws_iam_policy_document" "rko-router-deploy-ecr" {
     resources = ["*"]
     actions = [
       "ecr:GetAuthorizationToken",
+      "ecr-public:GetAuthorizationToken", # authenticated pulls from public.ecr.aws (base images in Dockerfile)
       "sts:GetServiceBearerToken",
     ]
   }
@@ -56,6 +58,17 @@ data "aws_iam_policy_document" "rko-router-deploy-ecr" {
     resources = [
       aws_ecr_repository.rko-router.arn,
     ]
+
+    # pull_request runs only need the public.ecr.aws login above
+    condition {
+      test     = "StringEquals"
+      variable = "token.actions.githubusercontent.com:sub"
+      values = [
+        "repo:ruby-no-kai/rko-router:environment:lambda-prod",
+        "repo:ruby-no-kai/rko-router:ref:refs/heads/master",
+        "repo:ruby-no-kai/rko-router:ref:refs/heads/test",
+      ]
+    }
   }
 
 }
