@@ -404,6 +404,14 @@ http {
       proxy_pass https://asakusarb.github.io;
     }
       
+    location ~ ^/oedo11(.*) {
+      include force_https.conf;
+      include github_pages.conf;
+      proxy_redirect https://asakusa.rubyist.net/oedo11 $map_request_proto://$http_host/oedo11;
+      proxy_set_header Host "asakusa.rubyist.net";
+      proxy_pass https://asakusarb.github.io;
+    }
+
     location /tokyo13 {
       include force_https.conf;
       include github_pages.conf;
